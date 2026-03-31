@@ -1,0 +1,1 @@
+{"rewrites":[{"source":"/api/anthropic/(.*)","destination":"/api/proxy"}]}
