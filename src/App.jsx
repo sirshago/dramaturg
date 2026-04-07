@@ -1,20 +1,19 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 
+// ─── PALETTE ─────────────────────────────────────────────────────────────────
 const C = {
-  bg:        "#f5f2ed",        // pappersVit
-  surface:   "rgba(0,0,0,0.03)",
-  border:    "rgba(0,0,0,0.12)",
-  borderHov: "rgba(0,0,0,0.45)",
-  ink:       "#1a1a18",        // nästan svart bläck
-  inkDim:    "#6a6a62",        // bleknat bläck
-  inkFaint:  "#b8b5ae",        // ytterst blekt
-  accent:    "#3a3a34",        // mörkt bläck
-  accentHi:  "#0e0e0c",        // djupsvart
-  act1:      "#4a7a5a",        // mörkgrön
-  act2a:     "#3a6070",        // mörkblå
-  act2b:     "#805040",        // terrakotta
-  act3:      "#7a6030",        // mörkguld
-  err:       "#a03030",
+  bg:       "#f7f5f0",
+  surface:  "rgba(0,0,0,0.03)",
+  border:   "rgba(0,0,0,0.15)",
+  borderHov:"rgba(0,0,0,0.50)",
+  ink:      "#111110",
+  inkDim:   "#555550",
+  inkFaint: "#aaa9a3",
+  act1:     "#2d6e3a",
+  act2a:    "#185fa5",
+  act2b:    "#7a3a20",
+  act3:     "#6a5010",
+  err:      "#8b2020",
 };
 
 // ─── BEAT EXPLANATIONS ───────────────────────────────────────────────────────
@@ -35,7 +34,6 @@ const BEAT_EXPLANATIONS = {
     break_into_three:  "En ny insikt — ofta tack vare B-storyn — ger protagonisten det hen behöver för att försöka igen. Akt III är möjlig bara för att Akt II lärde hen något om sig själv.",
     finale:            "Protagonisten bevisar att hen har förändrats. Det räcker inte att ha lärt sig läxan i tanken — hen måste omsätta den i handling och besegra det yttre problemet på ett nytt sätt.",
     final_image:       "Spegeln av öppningsbilden, men nu omvänd. Protagonistens värld ser likadan ut — men det gör den inte. Vi ser hur lång resa som gjorts och vad förändringen faktiskt kostade.",
-    // Hero's Journey
     ordinary_world:    "Vi etablerar hjältens normala tillvaro — vardagen, världsbilden, det som är välkänt. Kontrasten mot vad som komma skall är avgörande: vi måste förstå vad hjälten lämnar bakom sig.",
     call_to_adventure: "En utmaning, ett problem eller ett äventyr dyker upp som stör den vanliga världen. Hjälten kallas att kliva utanför sin bekvämlighetszon — in i det okända.",
     refusal:           "Hjälten tvekar eller nekar kallelsen. Rädsla, skyldigheter, tvivel — vägran är mänsklig och nödvändig. Den visar att stakes är verkliga och att resan inte är lätt.",
@@ -48,7 +46,6 @@ const BEAT_EXPLANATIONS = {
     road_back:         "Hjälten vänder mot hemvärlden men jagades fortfarande av konsekvenserna av sina handlingar. Den yttre faran är inte borta — och insikterna måste nu integreras.",
     resurrection:      "Den sista, avgörande prövningen. Hjälten måste visa att hen verkligen har förändrats — gamla vanor, gamla rädslor prövas en sista gång. Endast den förnyade hjälten kan segra.",
     return_with_elixir:"Hjälten återvänder till den vanliga världen med ett 'eliksir' — ett fysiskt föremål, en insikt, kärlek — som kan hela hemvärlden. Resan har förändrat både hjälten och världen.",
-    // Freytag
     exposition:        "Grundförutsättningarna läggs ut: tid, plats, karaktärer och den konfliktkimande situationen. Exposition är bakgrundsmusiken — den ska vara knappt märkbar men avgörande.",
     inciting_incident: "Den händelse som sätter berättelsens konflikt i rörelse. Det är störningen av status quo, gnistan som antänder handlingens långa led.",
     rising_action:     "En serie händelser som bygger spänning och komplexitet. Protagonist och antagonist möts, stakes höjs successivt, karaktärerna avslöjas under press.",
@@ -74,7 +71,6 @@ const BEAT_EXPLANATIONS = {
     break_into_three:  "A new insight — often thanks to the B story — gives the protagonist what they need to try again. Act III is only possible because Act II taught them something about themselves.",
     finale:            "The protagonist proves they have changed. It's not enough to have learned the lesson in thought — they must put it into action and defeat the outer problem in a new way.",
     final_image:       "The mirror of the opening image, but now reversed. The protagonist's world looks the same — but it doesn't. We see how long the journey has been and what the change actually cost.",
-    // Hero's Journey
     ordinary_world:    "We establish the hero's normal existence — the everyday, the worldview, the familiar. The contrast with what's to come is crucial: we must understand what the hero is leaving behind.",
     call_to_adventure: "A challenge, problem, or adventure appears that disrupts the ordinary world. The hero is called to step outside their comfort zone — into the unknown.",
     refusal:           "The hero hesitates or refuses the call. Fear, obligation, doubt — refusal is human and necessary. It shows the stakes are real and the journey is not easy.",
@@ -87,7 +83,6 @@ const BEAT_EXPLANATIONS = {
     road_back:         "The hero turns toward the home world but is still pursued by the consequences of their actions. The outer danger isn't gone — and the insights must now be integrated.",
     resurrection:      "The final, decisive ordeal. The hero must show they have truly changed — old habits, old fears are tested one last time. Only the reborn hero can succeed.",
     return_with_elixir:"The hero returns to the ordinary world with an 'elixir' — a physical object, an insight, love — that can heal the home world. The journey has changed both the hero and the world.",
-    // Freytag
     exposition:        "The basic conditions are laid out: time, place, characters, and the simmering conflict situation. Exposition is background music — it should be barely noticeable but crucial.",
     inciting_incident: "The event that sets the story's conflict in motion. It's the disruption of the status quo, the spark that ignites the long chain of action.",
     rising_action:     "A series of events that build tension and complexity. Protagonist and antagonist meet, stakes rise gradually, characters are revealed under pressure.",
@@ -102,14 +97,56 @@ const BEAT_EXPLANATIONS = {
 // ─── MODELS ──────────────────────────────────────────────────────────────────
 const MODELS = {
   sv: [
-    { id: "save_the_cat", name: "Save the Cat", author: "Blake Snyder", tagline: "15 exakta beats, manus-preciserat", best: "Spänning, thriller, komedi — berättelser med tydlig yttre konflikt och tempo.", worst: "Litterär prosa, icke-linjära berättelser, karaktärsstudier utan tydlig yttre handling.", desc: "Varje beat har en procentuell position i manuset, vilket ger ett skelett att bygga kött på. Lämpar sig när du vill ha en färdig struktur att följa eller bryta mot medvetet." },
-    { id: "hero_journey", name: "Hjälteresan", author: "Joseph Campbell / Christopher Vogler", tagline: "12 arketypiska steg, mytisk resonans", best: "Fantasy, epos, coming-of-age — berättelser om transformation och kallelse.", worst: "Ensembledrama, berättelser utan tydlig central hjälte, minimalistisk realism.", desc: "Campbells urgamla struktur, bearbetad för film av Vogler. Lika fokuserad på den inre förändringen som den yttre handlingen." },
-    { id: "freytag", name: "Freytags Pyramid", author: "Gustav Freytag", tagline: "5 akter, klassisk dramatik", best: "Teaterpjäser, drama, tragedi — berättelser som undersöker konsekvenser av val.", worst: "Snabbtempad action, komedier, berättelser med många sidospår.", desc: "Gustav Freytags femaktsmodell från 1863, ursprungligen utvecklad för analys av drama och tragedi. Strukturen är enkel: exposition, stigande handling, klimax, fallande handling, upplösning — vilket ger stort tolkningsutrymme inom varje fas." },
+    {
+      id: "save_the_cat", name: "Save the Cat", author: "Blake Snyder",
+      tagline: "15 exakta beats, manus-preciserat",
+      best: "Spänning, thriller, komedi — berättelser med tydlig yttre konflikt och tempo.",
+      worst: "Litterär prosa, icke-linjära berättelser, karaktärsstudier utan tydlig yttre handling.",
+      desc: "Varje beat har en procentuell position i manuset, vilket ger en tydlig struktur att följa eller medvetet bryta mot.",
+      examples: "Används i filmer som Parasite, Bridesmaids och The Dark Knight.",
+    },
+    {
+      id: "hero_journey", name: "Hjälteresan", author: "Joseph Campbell / Christopher Vogler",
+      tagline: "12 arketypiska steg, fokus på inre förändring",
+      best: "Fantasy, epos, coming-of-age — berättelser om transformation och kallelse.",
+      worst: "Ensembledrama, berättelser utan tydlig central hjälte, minimalistisk realism.",
+      desc: "Campbells urgamla struktur, bearbetad för film av Vogler. Lika fokuserad på den inre förändringen som den yttre handlingen.",
+      examples: "Harry Potter, Frodo i Sagan om ringen och Neo i The Matrix följer alla hjälteresan.",
+    },
+    {
+      id: "freytag", name: "Freytags Pyramid", author: "Gustav Freytag",
+      tagline: "5 akter, klassisk dramatik",
+      best: "Teaterpjäser, drama, tragedi — berättelser som undersöker konsekvenser av val.",
+      worst: "Snabbtempad action, komedier, berättelser med många sidospår.",
+      desc: "Utvecklad för analys av drama och tragedi. Strukturen är enkel: exposition, stigande handling, klimax, fallande handling, upplösning — vilket ger stort tolkningsutrymme inom varje fas.",
+      examples: "Ibsens pjäser, Shakespeares tragedier och många klassiska dramer följer denna modell.",
+    },
   ],
   en: [
-    { id: "save_the_cat", name: "Save the Cat", author: "Blake Snyder", tagline: "15 precise beats, screenplay-tuned", best: "Suspense, thriller, comedy — stories with clear external conflict and pace.", worst: "Literary prose, non-linear narratives, character studies without clear external plot.", desc: "Each beat has a percentage position in the screenplay, giving you a skeleton to build on. Works well when you want a ready-made structure to follow — or break deliberately." },
-    { id: "hero_journey", name: "The Hero's Journey", author: "Joseph Campbell / Christopher Vogler", tagline: "12 archetypal stages, mythic resonance", best: "Fantasy, epic, coming-of-age — stories about transformation and calling.", worst: "Ensemble drama, stories without a clear central hero, minimalist realism.", desc: "Campbell's ancient structure, adapted for film by Vogler. Equally focused on inner transformation as outer action." },
-    { id: "freytag", name: "Freytag's Pyramid", author: "Gustav Freytag", tagline: "5 acts, classical drama", best: "Stage plays, drama, tragedy — stories that explore the consequences of choice.", worst: "Fast-paced action, comedies, stories with many subplots.", desc: "Gustav Freytag's five-act model from 1863, originally developed to analyse drama and tragedy. The structure is straightforward — exposition, rising action, climax, falling action, resolution — leaving considerable room for interpretation within each phase." },
+    {
+      id: "save_the_cat", name: "Save the Cat", author: "Blake Snyder",
+      tagline: "15 precise beats, screenplay-tuned",
+      best: "Suspense, thriller, comedy — stories with clear external conflict and pace.",
+      worst: "Literary prose, non-linear narratives, character studies without clear external plot.",
+      desc: "Each beat has a percentage position in the screenplay, giving you a clear structure to follow — or deliberately break.",
+      examples: "Used in films like Parasite, Bridesmaids and The Dark Knight.",
+    },
+    {
+      id: "hero_journey", name: "The Hero's Journey", author: "Joseph Campbell / Christopher Vogler",
+      tagline: "12 archetypal stages, focus on inner change",
+      best: "Fantasy, epic, coming-of-age — stories about transformation and calling.",
+      worst: "Ensemble drama, stories without a clear central hero, minimalist realism.",
+      desc: "Campbell's ancient structure, adapted for film by Vogler. Equally focused on inner transformation as outer action.",
+      examples: "Harry Potter, Frodo in The Lord of the Rings and Neo in The Matrix all follow the Hero's Journey.",
+    },
+    {
+      id: "freytag", name: "Freytag's Pyramid", author: "Gustav Freytag",
+      tagline: "5 acts, classical drama",
+      best: "Stage plays, drama, tragedy — stories that explore the consequences of choice.",
+      worst: "Fast-paced action, comedies, stories with many subplots.",
+      desc: "Developed for the analysis of drama and tragedy. The structure is straightforward — exposition, rising action, climax, falling action, resolution — leaving considerable room for interpretation.",
+      examples: "Ibsen's plays, Shakespeare's tragedies and many classical dramas follow this model.",
+    },
   ],
 };
 
@@ -117,90 +154,90 @@ const MODELS = {
 const BEAT_LABELS = {
   save_the_cat: {
     sv: [
-      { id: "opening_image",    label: "Öppningsbild",           pct: "1%",      color: C.act1  },
-      { id: "theme_stated",     label: "Temats kärna",           pct: "5%",      color: C.act1  },
-      { id: "setup",            label: "Etablering",             pct: "1–10%",   color: C.act1  },
-      { id: "catalyst",         label: "Katalysator",            pct: "12%",     color: C.act2a },
-      { id: "debate",           label: "Debatt / Tvekan",        pct: "12–25%",  color: C.act2a },
-      { id: "break_into_two",   label: "Brytpunkt — Akt II",     pct: "25%",     color: C.act2a },
-      { id: "b_story",          label: "B-berättelsen",          pct: "30%",     color: C.act2a },
-      { id: "fun_and_games",    label: "Löfte & underhållning",  pct: "30–55%",  color: C.act2a },
-      { id: "midpoint",         label: "Mittpunkt",              pct: "50%",     color: C.act2a },
-      { id: "bad_guys_close_in",label: "Fienden stänger in",     pct: "55–75%",  color: C.act2b },
-      { id: "all_is_lost",      label: "Allt är förlorat",       pct: "75%",     color: C.act2b },
-      { id: "dark_night",       label: "Själens mörka natt",     pct: "75–85%",  color: C.act2b },
-      { id: "break_into_three", label: "Brytpunkt — Akt III",    pct: "85%",     color: C.act3  },
-      { id: "finale",           label: "Final",                  pct: "85–99%",  color: C.act3  },
-      { id: "final_image",      label: "Slutbild",               pct: "99%",     color: C.act3  },
+      { id: "opening_image",    label: "Öppningsbild",          pct: "1%",     color: C.act1  },
+      { id: "theme_stated",     label: "Temats kärna",          pct: "5%",     color: C.act1  },
+      { id: "setup",            label: "Etablering",            pct: "1–10%",  color: C.act1  },
+      { id: "catalyst",         label: "Katalysator",           pct: "12%",    color: C.act2a },
+      { id: "debate",           label: "Debatt / Tvekan",       pct: "12–25%", color: C.act2a },
+      { id: "break_into_two",   label: "Brytpunkt — Akt II",    pct: "25%",    color: C.act2a },
+      { id: "b_story",          label: "B-berättelsen",         pct: "30%",    color: C.act2a },
+      { id: "fun_and_games",    label: "Löfte & underhållning", pct: "30–55%", color: C.act2a },
+      { id: "midpoint",         label: "Mittpunkt",             pct: "50%",    color: C.act2a },
+      { id: "bad_guys_close_in",label: "Fienden stänger in",    pct: "55–75%", color: C.act2b },
+      { id: "all_is_lost",      label: "Allt är förlorat",      pct: "75%",    color: C.act2b },
+      { id: "dark_night",       label: "Själens mörka natt",    pct: "75–85%", color: C.act2b },
+      { id: "break_into_three", label: "Brytpunkt — Akt III",   pct: "85%",    color: C.act3  },
+      { id: "finale",           label: "Final",                 pct: "85–99%", color: C.act3  },
+      { id: "final_image",      label: "Slutbild",              pct: "99%",    color: C.act3  },
     ],
     en: [
-      { id: "opening_image",    label: "Opening Image",          pct: "1%",      color: C.act1  },
-      { id: "theme_stated",     label: "Theme Stated",           pct: "5%",      color: C.act1  },
-      { id: "setup",            label: "Set-Up",                 pct: "1–10%",   color: C.act1  },
-      { id: "catalyst",         label: "Catalyst",               pct: "12%",     color: C.act2a },
-      { id: "debate",           label: "Debate",                 pct: "12–25%",  color: C.act2a },
-      { id: "break_into_two",   label: "Break into Two",         pct: "25%",     color: C.act2a },
-      { id: "b_story",          label: "B Story",                pct: "30%",     color: C.act2a },
-      { id: "fun_and_games",    label: "Fun & Games",            pct: "30–55%",  color: C.act2a },
-      { id: "midpoint",         label: "Midpoint",               pct: "50%",     color: C.act2a },
-      { id: "bad_guys_close_in",label: "Bad Guys Close In",      pct: "55–75%",  color: C.act2b },
-      { id: "all_is_lost",      label: "All Is Lost",            pct: "75%",     color: C.act2b },
-      { id: "dark_night",       label: "Dark Night of the Soul", pct: "75–85%",  color: C.act2b },
-      { id: "break_into_three", label: "Break into Three",       pct: "85%",     color: C.act3  },
-      { id: "finale",           label: "Finale",                 pct: "85–99%",  color: C.act3  },
-      { id: "final_image",      label: "Final Image",            pct: "99%",     color: C.act3  },
+      { id: "opening_image",    label: "Opening Image",         pct: "1%",     color: C.act1  },
+      { id: "theme_stated",     label: "Theme Stated",          pct: "5%",     color: C.act1  },
+      { id: "setup",            label: "Set-Up",                pct: "1–10%",  color: C.act1  },
+      { id: "catalyst",         label: "Catalyst",              pct: "12%",    color: C.act2a },
+      { id: "debate",           label: "Debate",                pct: "12–25%", color: C.act2a },
+      { id: "break_into_two",   label: "Break into Two",        pct: "25%",    color: C.act2a },
+      { id: "b_story",          label: "B Story",               pct: "30%",    color: C.act2a },
+      { id: "fun_and_games",    label: "Fun & Games",           pct: "30–55%", color: C.act2a },
+      { id: "midpoint",         label: "Midpoint",              pct: "50%",    color: C.act2a },
+      { id: "bad_guys_close_in",label: "Bad Guys Close In",     pct: "55–75%", color: C.act2b },
+      { id: "all_is_lost",      label: "All Is Lost",           pct: "75%",    color: C.act2b },
+      { id: "dark_night",       label: "Dark Night of the Soul",pct: "75–85%", color: C.act2b },
+      { id: "break_into_three", label: "Break into Three",      pct: "85%",    color: C.act3  },
+      { id: "finale",           label: "Finale",                pct: "85–99%", color: C.act3  },
+      { id: "final_image",      label: "Final Image",           pct: "99%",    color: C.act3  },
     ],
   },
   hero_journey: {
     sv: [
-      { id: "ordinary_world",      label: "Den vanliga världen",     pct: "1–10%",  color: C.act1  },
-      { id: "call_to_adventure",   label: "Kallelsen",               pct: "10–12%", color: C.act1  },
-      { id: "refusal",             label: "Vägran",                  pct: "12–20%", color: C.act2a },
-      { id: "mentor",              label: "Mötet med mentorn",       pct: "20–25%", color: C.act2a },
-      { id: "crossing_threshold",  label: "Tröskelövergången",       pct: "25%",    color: C.act2a },
-      { id: "tests_allies_enemies",label: "Prövningar & allierade",  pct: "30–50%", color: C.act2a },
-      { id: "innermost_cave",      label: "Den innersta grottan",    pct: "50%",    color: C.act2b },
-      { id: "ordeal",              label: "Den stora prövningen",    pct: "55–70%", color: C.act2b },
-      { id: "reward",              label: "Belöningen",              pct: "70–75%", color: C.act2b },
-      { id: "road_back",           label: "Vägen tillbaka",          pct: "75–85%", color: C.act3  },
-      { id: "resurrection",        label: "Återuppståndelsen",       pct: "85–95%", color: C.act3  },
-      { id: "return_with_elixir",  label: "Återkomsten med eliksir", pct: "95–99%", color: C.act3  },
+      { id: "ordinary_world",      label: "Den vanliga världen",    pct: "1–10%",  color: C.act1  },
+      { id: "call_to_adventure",   label: "Kallelsen",              pct: "10–12%", color: C.act1  },
+      { id: "refusal",             label: "Vägran",                 pct: "12–20%", color: C.act2a },
+      { id: "mentor",              label: "Mötet med mentorn",      pct: "20–25%", color: C.act2a },
+      { id: "crossing_threshold",  label: "Tröskelövergången",      pct: "25%",    color: C.act2a },
+      { id: "tests_allies_enemies",label: "Prövningar & allierade", pct: "30–50%", color: C.act2a },
+      { id: "innermost_cave",      label: "Den innersta grottan",   pct: "50%",    color: C.act2b },
+      { id: "ordeal",              label: "Den stora prövningen",   pct: "55–70%", color: C.act2b },
+      { id: "reward",              label: "Belöningen",             pct: "70–75%", color: C.act2b },
+      { id: "road_back",           label: "Vägen tillbaka",         pct: "75–85%", color: C.act3  },
+      { id: "resurrection",        label: "Återuppståndelsen",      pct: "85–95%", color: C.act3  },
+      { id: "return_with_elixir",  label: "Eliksirens återkomst",   pct: "95–99%", color: C.act3  },
     ],
     en: [
-      { id: "ordinary_world",      label: "Ordinary World",          pct: "1–10%",  color: C.act1  },
-      { id: "call_to_adventure",   label: "Call to Adventure",       pct: "10–12%", color: C.act1  },
-      { id: "refusal",             label: "Refusal of the Call",     pct: "12–20%", color: C.act2a },
-      { id: "mentor",              label: "Meeting the Mentor",      pct: "20–25%", color: C.act2a },
-      { id: "crossing_threshold",  label: "Crossing the Threshold",  pct: "25%",    color: C.act2a },
-      { id: "tests_allies_enemies",label: "Tests, Allies, Enemies",  pct: "30–50%", color: C.act2a },
-      { id: "innermost_cave",      label: "The Innermost Cave",      pct: "50%",    color: C.act2b },
-      { id: "ordeal",              label: "The Ordeal",              pct: "55–70%", color: C.act2b },
-      { id: "reward",              label: "The Reward",              pct: "70–75%", color: C.act2b },
-      { id: "road_back",           label: "The Road Back",           pct: "75–85%", color: C.act3  },
-      { id: "resurrection",        label: "The Resurrection",        pct: "85–95%", color: C.act3  },
-      { id: "return_with_elixir",  label: "Return with the Elixir",  pct: "95–99%", color: C.act3  },
+      { id: "ordinary_world",      label: "Ordinary World",         pct: "1–10%",  color: C.act1  },
+      { id: "call_to_adventure",   label: "Call to Adventure",      pct: "10–12%", color: C.act1  },
+      { id: "refusal",             label: "Refusal of the Call",    pct: "12–20%", color: C.act2a },
+      { id: "mentor",              label: "Meeting the Mentor",     pct: "20–25%", color: C.act2a },
+      { id: "crossing_threshold",  label: "Crossing the Threshold", pct: "25%",    color: C.act2a },
+      { id: "tests_allies_enemies",label: "Tests, Allies, Enemies", pct: "30–50%", color: C.act2a },
+      { id: "innermost_cave",      label: "The Innermost Cave",     pct: "50%",    color: C.act2b },
+      { id: "ordeal",              label: "The Ordeal",             pct: "55–70%", color: C.act2b },
+      { id: "reward",              label: "The Reward",             pct: "70–75%", color: C.act2b },
+      { id: "road_back",           label: "The Road Back",          pct: "75–85%", color: C.act3  },
+      { id: "resurrection",        label: "The Resurrection",       pct: "85–95%", color: C.act3  },
+      { id: "return_with_elixir",  label: "Return with the Elixir", pct: "95–99%", color: C.act3  },
     ],
   },
   freytag: {
     sv: [
-      { id: "exposition",        label: "Exposition",                  pct: "1–20%",  color: C.act1  },
-      { id: "inciting_incident", label: "Det utlösande ögonblicket",   pct: "20%",    color: C.act1  },
-      { id: "rising_action",     label: "Stigande handling",           pct: "20–50%", color: C.act2a },
-      { id: "complication",      label: "Komplikation",                pct: "40–55%", color: C.act2a },
-      { id: "climax",            label: "Klimax",                      pct: "50–60%", color: C.act2b },
-      { id: "falling_action",    label: "Fallande handling",           pct: "60–85%", color: C.act3  },
-      { id: "catastrophe",       label: "Katastrof / Vändning",        pct: "80–90%", color: C.act3  },
-      { id: "resolution",        label: "Upplösning",                  pct: "90–99%", color: C.act3  },
+      { id: "exposition",        label: "Exposition",               pct: "1–20%",  color: C.act1  },
+      { id: "inciting_incident", label: "Det utlösande ögonblicket",pct: "20%",    color: C.act1  },
+      { id: "rising_action",     label: "Stigande handling",        pct: "20–50%", color: C.act2a },
+      { id: "complication",      label: "Komplikation",             pct: "40–55%", color: C.act2a },
+      { id: "climax",            label: "Klimax",                   pct: "50–60%", color: C.act2b },
+      { id: "falling_action",    label: "Fallande handling",        pct: "60–85%", color: C.act3  },
+      { id: "catastrophe",       label: "Katastrof / Vändning",     pct: "80–90%", color: C.act3  },
+      { id: "resolution",        label: "Upplösning",               pct: "90–99%", color: C.act3  },
     ],
     en: [
-      { id: "exposition",        label: "Exposition",                  pct: "1–20%",  color: C.act1  },
-      { id: "inciting_incident", label: "Inciting Incident",           pct: "20%",    color: C.act1  },
-      { id: "rising_action",     label: "Rising Action",               pct: "20–50%", color: C.act2a },
-      { id: "complication",      label: "Complication",                pct: "40–55%", color: C.act2a },
-      { id: "climax",            label: "Climax",                      pct: "50–60%", color: C.act2b },
-      { id: "falling_action",    label: "Falling Action",              pct: "60–85%", color: C.act3  },
-      { id: "catastrophe",       label: "Catastrophe / Turn",          pct: "80–90%", color: C.act3  },
-      { id: "resolution",        label: "Resolution",                  pct: "90–99%", color: C.act3  },
+      { id: "exposition",        label: "Exposition",               pct: "1–20%",  color: C.act1  },
+      { id: "inciting_incident", label: "Inciting Incident",        pct: "20%",    color: C.act1  },
+      { id: "rising_action",     label: "Rising Action",            pct: "20–50%", color: C.act2a },
+      { id: "complication",      label: "Complication",             pct: "40–55%", color: C.act2a },
+      { id: "climax",            label: "Climax",                   pct: "50–60%", color: C.act2b },
+      { id: "falling_action",    label: "Falling Action",           pct: "60–85%", color: C.act3  },
+      { id: "catastrophe",       label: "Catastrophe / Turn",       pct: "80–90%", color: C.act3  },
+      { id: "resolution",        label: "Resolution",               pct: "90–99%", color: C.act3  },
     ],
   },
 };
@@ -208,18 +245,58 @@ const BEAT_LABELS = {
 // ─── TRANSLATIONS ─────────────────────────────────────────────────────────────
 const T = {
   sv: {
-    appSubtitle: "AI-ASSISTENT FÖR BERÄTTARSTRUKTURER",
-    steps: ["Språk", "Modell", "Idé", "Karaktärer", "Beat Sheet"],
-    modelStep: { heading: "Välj dramaturgimodell", sub: "", bestLabel: "Passar bäst för", worstLabel: "Mindre lämpat för", btn: "NÄSTA: BERÄTTELSEIDÉ →" },
-    ideaStep: { heading: "Din berättelseidé", sub: "Börja med kärnan — vad handlar berättelsen om?", loglineLabel: "Logline *", loglinePlaceholder: "En mening som fångar berättelsens essens: vem är protagonisten, vad vill hen, och vad är hindret?", titleLabel: "Titel (valfri)", titlePlaceholder: "Arbetstiteln", genreLabel: "Genre", toneLabel: "Ton & stämning", btn: "NÄSTA: KARAKTÄRER →" },
-    charStep: { heading: "Karaktärer", sub: "Lägg till dina viktigaste karaktärer. Minst en krävs.", nameLabel: "Namn", namePlaceholder: "Karaktärens namn", roleLabel: "Roll", descLabel: "Bakgrund & drivkraft", descPlaceholder: "Vad vill karaktären? Vad hindrar hen?", addBtn: "+ LÄGG TILL KARAKTÄR", backBtn: "← TILLBAKA", nextBtn: "GENERERA BEAT SHEET →" },
+    appSubtitle: "Dramaturgiverktyg för berättare",
+    steps: ["Modell", "Idé", "Karaktärer", "Beat Sheet"],
+    beatSheetExplainer: "Beskriv din berättelseidé och dina karaktärer. Appen genererar en komplett dramaturgistruktur anpassad till din historia.",
+    modelStep: {
+      heading: "Välj dramaturgimodell",
+      bestLabel: "Passar bäst för",
+      worstLabel: "Mindre lämpat för",
+      examplesLabel: "Exempel",
+      btn: "Nästa: Berättelseidé →",
+    },
+    ideaStep: {
+      heading: "Din berättelseidé",
+      sub: "Börja med kärnan — vad handlar berättelsen om?",
+      loglineLabel: "Logline",
+      loglinePlaceholder: "En mening som fångar berättelsens essens: vem är protagonisten, vad vill hen, och vad är hindret?",
+      titleLabel: "Titel (valfri)",
+      titlePlaceholder: "Arbetstiteln",
+      genreLabel: "Genre",
+      toneLabel: "Ton & stämning",
+      btn: "Nästa: Karaktärer →",
+    },
+    charStep: {
+      heading: "Karaktärer",
+      sub: "Lägg till dina viktigaste karaktärer. Minst en krävs.",
+      nameLabel: "Namn",
+      namePlaceholder: "Karaktärens namn",
+      roleLabel: "Roll",
+      descLabel: "Bakgrund & drivkraft",
+      descPlaceholder: "Vad vill karaktären? Vad hindrar hen?",
+      addBtn: "+ Lägg till karaktär",
+      backBtn: "← Tillbaka",
+      nextBtn: "Generera beat sheet →",
+    },
     beatStep: {
-      fallbackTitle: "Beat Sheet", newBtn: "NY BERÄTTELSE", generating: "Bygger dramaturgisk struktur…",
-      error: "Något gick fel. Kontrollera att du har en giltig API-nyckel.",
-      tip: "TIPS: Detta beat sheet är ett förslag, inte en tvångströja. Använd det som en karta att avvika ifrån.",
-      generatingBeat: "Genererar…", feedbackPlaceholder: "Skriv feedback — t.ex. 'för klichéartat' eller 'protagonisten skulle aldrig göra så här'…",
-      feedbackBtn: "REGENERERA HÄRIFRÅN →", regenerating: "Regenererar beat {n} och framåt…",
+      fallbackTitle: "Beat Sheet",
+      newBtn: "Ny berättelse",
+      generating: "Bygger dramaturgisk struktur…",
+      error503: "Servern är tillfälligt överbelastad. Vänta en stund och försök igen.",
+      error: "Något gick fel. Försök igen.",
+      tip: "Tips: Detta beat sheet är ett förslag, inte en tvångströja. Använd det som en karta att avvika ifrån.",
+      generatingBeat: "Genererar…",
+      feedbackPlaceholder: "Skriv feedback — t.ex. 'för klichéartat' eller 'protagonisten skulle aldrig göra så här'…",
+      feedbackBtn: "Fortsätt →",
+      regenerating: "Regenererar…",
       whatIsThis: "Vad är detta?",
+      giveFeedback: "Ge feedback",
+      cancel: "Avbryt",
+      scopeQuestion: "Hur mycket ska regenereras?",
+      scopeOnly: "Bara detta beat",
+      scopeOnlySub: "Resten behålls",
+      scopeForward: "Detta beat + alla efterföljande",
+      scopeForwardSub: "Anpassar hela slutet",
     },
     genres: ["Thriller","Drama","Komedi","Romantik","Skräck","Science Fiction","Fantasy","Action","Historisk","Biografisk","Mysterium","Äventyr"],
     tones:  ["Mörk och pressad","Lättsam och varm","Poetisk och drömskt","Satirisk","Episk","Intim och personlig","Humoristisk","Dystopisk","Romantisk","Realistisk"],
@@ -227,7 +304,7 @@ const T = {
       { label: "Protagonist",     desc: "Huvudpersonen — den vars resa och förändring berättelsen kretsar kring." },
       { label: "Antagonist",      desc: "Den som aktivt motarbetar protagonisten. Kan vara en person, ett system eller en inre kraft." },
       { label: "Sidekick",        desc: "Den trogna följeslagaren. Speglar protagonisten och lättar ofta stämningen." },
-      { label: "Mentor",          desc: "Ger protagonisten kunskap, verktyg eller mod att ta nästa steg — men gör inte resan åt hen." },
+      { label: "Mentor",          desc: "Ger protagonisten kunskap, verktyg eller mod — men gör inte resan åt hen." },
       { label: "Kärleksintresse", desc: "Bär ofta B-storyn och temat. Utmanar protagonisten på ett personligt plan." },
       { label: "Folie",           desc: "Kontrasterar mot protagonisten och gör hens egenskaper tydligare — inte nödvändigtvis en fiende." },
       { label: "Trickster",       desc: "Skapar kaos, utmanar normer och avslöjar sanningar genom humor eller oväntade handlingar." },
@@ -237,87 +314,166 @@ const T = {
     ],
   },
   en: {
-    appSubtitle: "AI ASSISTANT FOR STORY STRUCTURE",
-    steps: ["Language", "Model", "Idea", "Characters", "Beat Sheet"],
-    modelStep: { heading: "Choose your story model", sub: "", bestLabel: "Best suited for", worstLabel: "Less suited for", btn: "NEXT: STORY IDEA →" },
-    ideaStep: { heading: "Your story idea", sub: "Start with the core — what is the story about?", loglineLabel: "Logline *", loglinePlaceholder: "One sentence capturing the essence: who is the protagonist, what do they want, and what stands in the way?", titleLabel: "Title (optional)", titlePlaceholder: "Working title", genreLabel: "Genre", toneLabel: "Tone & mood", btn: "NEXT: CHARACTERS →" },
-    charStep: { heading: "Characters", sub: "Add your key characters. At least one is required.", nameLabel: "Name", namePlaceholder: "Character's name", roleLabel: "Role", descLabel: "Background & motivation", descPlaceholder: "What does the character want? What holds them back?", addBtn: "+ ADD CHARACTER", backBtn: "← BACK", nextBtn: "GENERATE BEAT SHEET →" },
+    appSubtitle: "Dramaturgy tool for storytellers",
+    steps: ["Model", "Idea", "Characters", "Beat Sheet"],
+    beatSheetExplainer: "Describe your story idea and characters. The app generates a complete dramatic structure tailored to your story.",
+    modelStep: {
+      heading: "Choose your story model",
+      bestLabel: "Best suited for",
+      worstLabel: "Less suited for",
+      examplesLabel: "Examples",
+      btn: "Next: Story Idea →",
+    },
+    ideaStep: {
+      heading: "Your story idea",
+      sub: "Start with the core — what is the story about?",
+      loglineLabel: "Logline",
+      loglinePlaceholder: "One sentence capturing the essence: who is the protagonist, what do they want, and what stands in the way?",
+      titleLabel: "Title (optional)",
+      titlePlaceholder: "Working title",
+      genreLabel: "Genre",
+      toneLabel: "Tone & mood",
+      btn: "Next: Characters →",
+    },
+    charStep: {
+      heading: "Characters",
+      sub: "Add your key characters. At least one is required.",
+      nameLabel: "Name",
+      namePlaceholder: "Character's name",
+      roleLabel: "Role",
+      descLabel: "Background & motivation",
+      descPlaceholder: "What does the character want? What holds them back?",
+      addBtn: "+ Add character",
+      backBtn: "← Back",
+      nextBtn: "Generate beat sheet →",
+    },
     beatStep: {
-      fallbackTitle: "Beat Sheet", newBtn: "NEW STORY", generating: "Building dramatic structure…",
-      error: "Something went wrong. Please check that you have a valid API key.",
-      tip: "TIP: This beat sheet is a suggestion, not a straitjacket. Use it as a map to deviate from.",
-      generatingBeat: "Generating…", feedbackPlaceholder: "Write feedback — e.g. 'too clichéd' or 'my protagonist would never do this'…",
-      feedbackBtn: "REGENERATE FROM HERE →", regenerating: "Regenerating beat {n} and forward…",
+      fallbackTitle: "Beat Sheet",
+      newBtn: "New story",
+      generating: "Building dramatic structure…",
+      error503: "The server is temporarily overloaded. Wait a moment and try again.",
+      error: "Something went wrong. Please try again.",
+      tip: "Tip: This beat sheet is a suggestion, not a straitjacket. Use it as a map to deviate from.",
+      generatingBeat: "Generating…",
+      feedbackPlaceholder: "Write feedback — e.g. 'too clichéd' or 'my protagonist would never do this'…",
+      feedbackBtn: "Continue →",
+      regenerating: "Regenerating…",
       whatIsThis: "What is this?",
+      giveFeedback: "Give feedback",
+      cancel: "Cancel",
+      scopeQuestion: "How much should be regenerated?",
+      scopeOnly: "This beat only",
+      scopeOnlySub: "Rest stays unchanged",
+      scopeForward: "This beat + all following",
+      scopeForwardSub: "Adapts the rest to match",
     },
     genres: ["Thriller","Drama","Comedy","Romance","Horror","Science Fiction","Fantasy","Action","Historical","Biographical","Mystery","Adventure"],
     tones:  ["Dark and tense","Light and warm","Poetic and dreamlike","Satirical","Epic","Intimate and personal","Humorous","Dystopian","Romantic","Realistic"],
     roles: [
-      { label: "Protagonist",          desc: "The main character — the one whose journey and transformation the story revolves around." },
-      { label: "Antagonist",           desc: "The one who actively opposes the protagonist. Can be a person, a system, or an inner force." },
-      { label: "Sidekick",             desc: "The loyal companion. Mirrors the protagonist and often lightens the mood." },
-      { label: "Mentor",               desc: "Gives the protagonist knowledge, tools, or courage — but doesn't make the journey for them." },
-      { label: "Love interest",        desc: "Often carries the B story and the theme. Challenges the protagonist on a personal level." },
-      { label: "Foil",                 desc: "Contrasts with the protagonist to make their qualities clearer — not necessarily an enemy." },
-      { label: "Trickster",            desc: "Creates chaos, challenges norms, and reveals truths through humor or unexpected actions." },
-      { label: "Herald",               desc: "Delivers the call to adventure or crucial information that sets the story in motion." },
-      { label: "Threshold Guardian",   desc: "Tests the protagonist at key thresholds. Can be a trial rather than an enemy." },
-      { label: "Shadow",               desc: "Represents the protagonist's dark side or what they fear becoming — a mirror, not always an enemy." },
+      { label: "Protagonist",        desc: "The main character — the one whose journey and transformation the story revolves around." },
+      { label: "Antagonist",         desc: "The one who actively opposes the protagonist. Can be a person, a system, or an inner force." },
+      { label: "Sidekick",           desc: "The loyal companion. Mirrors the protagonist and often lightens the mood." },
+      { label: "Mentor",             desc: "Gives the protagonist knowledge, tools, or courage — but doesn't make the journey for them." },
+      { label: "Love interest",      desc: "Often carries the B story and the theme. Challenges the protagonist on a personal level." },
+      { label: "Foil",               desc: "Contrasts with the protagonist to make their qualities clearer — not necessarily an enemy." },
+      { label: "Trickster",          desc: "Creates chaos, challenges norms, and reveals truths through humor or unexpected actions." },
+      { label: "Herald",             desc: "Delivers the call to adventure or crucial information that sets the story in motion." },
+      { label: "Threshold Guardian", desc: "Tests the protagonist at key thresholds. Can be a trial rather than an enemy." },
+      { label: "Shadow",             desc: "Represents the protagonist's dark side or what they fear becoming — a mirror, not always an enemy." },
     ],
   },
 };
 
 // ─── STYLES ───────────────────────────────────────────────────────────────────
-const inputStyle = { width: "100%", background: "#ffffff", border: `1px solid ${C.border}`, borderRadius: "5px", padding: "10px 12px", color: C.ink, fontSize: "14px", fontFamily: "Georgia, serif", outline: "none", boxSizing: "border-box", transition: "border-color 0.2s" };
-const selectStyle = { ...inputStyle, background: "#ffffff", appearance: "none", WebkitAppearance: "none", cursor: "pointer", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23888880' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 12px center", paddingRight: "32px" };
-const labelStyle = { display: "block", fontSize: "10px", color: C.ink, letterSpacing: "1.5px", marginBottom: "6px", textTransform: "uppercase", fontFamily: "'Courier Prime', monospace", fontWeight: "700" };
-const btnPrimary = (active) => ({ background: active ? "rgba(0,0,0,0.07)" : "rgba(0,0,0,0.02)", border: `1px solid ${active ? C.borderHov : C.border}`, color: active ? C.accentHi : C.inkFaint, padding: "13px 28px", borderRadius: "5px", cursor: active ? "pointer" : "not-allowed", fontFamily: "'Courier Prime', monospace", fontSize: "11px", letterSpacing: "2px", transition: "all 0.2s" });
-const btnSecondary = { background: "none", border: `1px solid ${C.border}`, color: C.inkDim, padding: "13px 20px", borderRadius: "5px", cursor: "pointer", fontFamily: "'Courier Prime', monospace", fontSize: "11px", letterSpacing: "2px" };
+const F = { serif: "Georgia, serif" };
+const inputStyle = {
+  width: "100%", background: "#fff", border: `1px solid ${C.border}`,
+  borderRadius: "6px", padding: "12px 14px", color: C.ink, fontSize: "16px",
+  fontFamily: F.serif, outline: "none", boxSizing: "border-box", transition: "border-color 0.2s",
+};
+const selectStyle = {
+  ...inputStyle, appearance: "none", WebkitAppearance: "none", cursor: "pointer",
+  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23555550' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E")`,
+  backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center", paddingRight: "36px",
+  background: "#fff",
+};
+const labelStyle = {
+  display: "block", fontSize: "13px", color: C.inkDim,
+  marginBottom: "6px", fontFamily: F.serif, fontWeight: "400",
+};
+const btnPrimary = (active) => ({
+  background: active ? C.ink : "rgba(0,0,0,0.04)",
+  border: `1px solid ${active ? C.ink : C.border}`,
+  color: active ? "#fff" : C.inkFaint,
+  padding: "14px 28px", borderRadius: "6px",
+  cursor: active ? "pointer" : "not-allowed",
+  fontFamily: F.serif, fontSize: "16px", transition: "all 0.2s",
+});
+const btnSecondary = {
+  background: "none", border: `1px solid ${C.border}`, color: C.inkDim,
+  padding: "14px 20px", borderRadius: "6px", cursor: "pointer",
+  fontFamily: F.serif, fontSize: "16px",
+};
 
-// ─── COMPONENTS ───────────────────────────────────────────────────────────────
+// ─── SELECT FIELD ─────────────────────────────────────────────────────────────
 const SelectField = ({ label, value, onChange, options, placeholder }) => (
   <div>
     <label style={labelStyle}>{label}</label>
     <select value={value} onChange={e => onChange(e.target.value)} style={selectStyle}>
-      <option value="" style={{ background: "#f5f2ed", color: "#6a6a62" }}>{placeholder || "—"}</option>
-      {options.map(o => <option key={o} value={o} style={{ background: "#f5f2ed", color: "#1a1a18" }}>{o}</option>)}
+      <option value="" style={{ background: "#fff", color: C.inkDim }}>{placeholder || "—"}</option>
+      {options.map(o => <option key={o} value={o} style={{ background: "#fff", color: C.ink }}>{o}</option>)}
     </select>
   </div>
 );
 
+// ─── MODEL CARD ───────────────────────────────────────────────────────────────
 const ModelCard = ({ model, selected, onSelect, t }) => (
-  <div onClick={() => onSelect(model.id)} style={{ background: selected ? "rgba(0,0,0,0.055)" : C.surface, border: `1px solid ${selected ? C.borderHov : C.border}`, borderRadius: "8px", padding: "22px 24px", cursor: "pointer", transition: "all 0.18s", marginBottom: "12px" }}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "10px" }}>
+  <div onClick={() => onSelect(model.id)} style={{
+    background: selected ? "#fff" : C.surface,
+    border: `2px solid ${selected ? C.ink : C.border}`,
+    borderRadius: "8px", padding: "20px 22px", cursor: "pointer",
+    transition: "all 0.18s", marginBottom: "12px",
+  }}>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px" }}>
       <div>
-        <div style={{ display: "flex", alignItems: "baseline", gap: "10px" }}>
-          <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "20px", fontWeight: 400, color: selected ? C.accentHi : C.ink }}>{model.name}</span>
-          <span style={{ fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: C.inkDim, letterSpacing: "1px" }}>{model.author}</span>
-        </div>
-        <p style={{ margin: "3px 0 0", fontFamily: "'Courier Prime', monospace", fontSize: "10px", color: selected ? C.accent : C.inkDim, letterSpacing: "1px" }}>{model.tagline}</p>
+        <span style={{ fontSize: "18px", fontWeight: "400", color: C.ink, fontFamily: F.serif }}>{model.name}</span>
+        <span style={{ fontSize: "13px", color: C.inkDim, fontFamily: F.serif, marginLeft: "10px" }}>{model.author}</span>
       </div>
-      <div style={{ width: "16px", height: "16px", borderRadius: "50%", flexShrink: 0, marginTop: "2px", border: `1px solid ${selected ? C.accentHi : C.border}`, background: selected ? C.accentHi : "transparent", transition: "all 0.18s" }} />
-    </div>
-    <p style={{ margin: "0 0 12px", color: C.inkDim, fontSize: "13px", lineHeight: 1.6 }}>{model.desc}</p>
-    <div className="r-grid2-sm" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
-      <div style={{ background: "rgba(168,184,160,0.07)", border: "1px solid rgba(168,184,160,0.15)", borderRadius: "5px", padding: "10px 12px" }}>
-        <p style={{ margin: "0 0 4px", fontFamily: "'Courier Prime', monospace", fontSize: "9px", letterSpacing: "1.5px", color: C.act1 }}>{t.modelStep.bestLabel.toUpperCase()}</p>
-        <p style={{ margin: 0, fontSize: "12px", color: C.inkDim, lineHeight: 1.5 }}>{model.best}</p>
-      </div>
-      <div style={{ background: "rgba(184,168,160,0.07)", border: "1px solid rgba(184,168,160,0.12)", borderRadius: "5px", padding: "10px 12px" }}>
-        <p style={{ margin: "0 0 4px", fontFamily: "'Courier Prime', monospace", fontSize: "9px", letterSpacing: "1.5px", color: C.act2b }}>{t.modelStep.worstLabel.toUpperCase()}</p>
-        <p style={{ margin: 0, fontSize: "12px", color: C.inkDim, lineHeight: 1.5 }}>{model.worst}</p>
+      {/* Checkmark */}
+      <div style={{
+        width: "22px", height: "22px", borderRadius: "4px", flexShrink: 0,
+        border: `2px solid ${selected ? C.ink : C.border}`,
+        background: selected ? C.ink : "transparent",
+        display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.18s",
+      }}>
+        {selected && <span style={{ color: "#fff", fontSize: "13px", lineHeight: 1 }}>✓</span>}
       </div>
     </div>
+    <p style={{ margin: "0 0 14px", color: C.inkDim, fontSize: "15px", lineHeight: 1.6, fontFamily: F.serif }}>{model.desc}</p>
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: "10px" }} className="r-grid2-sm">
+      <div style={{ background: "#e8f3ea", border: "1px solid #b8d8bc", borderRadius: "5px", padding: "10px 12px" }}>
+        <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#2d6e3a", fontFamily: F.serif }}>{t.modelStep.bestLabel}</p>
+        <p style={{ margin: 0, fontSize: "13px", color: "#2d4e2a", lineHeight: 1.5, fontFamily: F.serif }}>{model.best}</p>
+      </div>
+      <div style={{ background: "#fde8e8", border: "1px solid #f0b8b8", borderRadius: "5px", padding: "10px 12px" }}>
+        <p style={{ margin: "0 0 4px", fontSize: "12px", color: "#8b2020", fontFamily: F.serif }}>{t.modelStep.worstLabel}</p>
+        <p style={{ margin: 0, fontSize: "13px", color: "#6b1010", lineHeight: 1.5, fontFamily: F.serif }}>{model.worst}</p>
+      </div>
+    </div>
+    <p style={{ margin: 0, fontSize: "13px", color: C.inkDim, fontFamily: F.serif, fontStyle: "italic" }}>
+      {t.modelStep.examplesLabel}: {model.examples}
+    </p>
   </div>
 );
 
+// ─── CHARACTER CARD ───────────────────────────────────────────────────────────
 const CharacterCard = ({ char, index, onChange, onRemove, t }) => {
   const roleLabels = t.roles.map(r => r.label);
   const roleDesc = t.roles.find(r => r.label === char.role)?.desc || null;
   return (
-    <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: "7px", padding: "16px", marginBottom: "10px", position: "relative" }}>
-      <button onClick={() => onRemove(index)} style={{ position: "absolute", top: "12px", right: "12px", background: "none", border: "none", color: C.inkFaint, cursor: "pointer", fontSize: "18px", lineHeight: 1 }}>×</button>
-      <div className="r-grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px", marginBottom: roleDesc ? "6px" : "10px" }}>
+    <div style={{ background: C.surface, border: `1px solid ${C.border}`, borderRadius: "7px", padding: "16px", marginBottom: "12px", position: "relative" }}>
+      <button onClick={() => onRemove(index)} style={{ position: "absolute", top: "14px", right: "14px", background: "none", border: "none", color: C.inkFaint, cursor: "pointer", fontSize: "20px", lineHeight: 1 }}>×</button>
+      <div className="r-grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: roleDesc ? "8px" : "12px" }}>
         <div>
           <label style={labelStyle}>{t.charStep.nameLabel}</label>
           <input value={char.name} onChange={e => onChange(index, "name", e.target.value)} placeholder={t.charStep.namePlaceholder} style={inputStyle} />
@@ -325,24 +481,25 @@ const CharacterCard = ({ char, index, onChange, onRemove, t }) => {
         <SelectField label={t.charStep.roleLabel} value={char.role} onChange={val => onChange(index, "role", val)} options={roleLabels} placeholder="—" />
       </div>
       {roleDesc && (
-        <p style={{ margin: "0 0 10px", fontSize: "11px", color: C.inkDim, fontStyle: "italic", lineHeight: 1.5, animation: "fadeIn 0.2s ease" }}>
+        <p style={{ margin: "0 0 12px", fontSize: "13px", color: C.inkDim, fontStyle: "italic", lineHeight: 1.5, fontFamily: F.serif, animation: "fadeIn 0.2s ease" }}>
           {roleDesc}
         </p>
       )}
       <div>
         <label style={labelStyle}>{t.charStep.descLabel}</label>
-        <textarea value={char.description} onChange={e => onChange(index, "description", e.target.value)} placeholder={t.charStep.descPlaceholder} rows={2} style={{ ...inputStyle, resize: "vertical" }} />
+        <textarea value={char.description} onChange={e => onChange(index, "description", e.target.value)}
+          placeholder={t.charStep.descPlaceholder} rows={2} style={{ ...inputStyle, resize: "vertical" }} />
       </div>
     </div>
   );
 };
 
-// ─── BEAT CARD (with explanation + feedback + scope choice) ──────────────────
+// ─── BEAT CARD ────────────────────────────────────────────────────────────────
 const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerate, regeneratingFrom, totalBeats, t, lang }) => {
   const [showExplanation, setShowExplanation] = useState(false);
-  const [showFeedback,    setShowFeedback]    = useState(false);
-  const [feedback,        setFeedback]        = useState("");
-  const [showScope,       setShowScope]       = useState(false);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [feedback, setFeedback] = useState("");
+  const [showScope, setShowScope] = useState(false);
   const explanation = BEAT_EXPLANATIONS[lang]?.[id];
   const isRegenerating = regeneratingFrom !== null && index >= regeneratingFrom;
   const isFirst = regeneratingFrom !== null && index === regeneratingFrom;
@@ -350,116 +507,87 @@ const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerat
 
   const handleFeedbackSubmit = () => {
     if (!feedback.trim()) return;
-    // If only one beat left (last), no choice needed — just regenerate this one
     if (isLastBeat) { onRegenerate(index, feedback, "only"); setFeedback(""); setShowFeedback(false); return; }
     setShowScope(true);
   };
-
-  const handleScope = (scope) => {
-    onRegenerate(index, feedback, scope);
-    setFeedback(""); setShowFeedback(false); setShowScope(false);
-  };
-
+  const handleScope = (scope) => { onRegenerate(index, feedback, scope); setFeedback(""); setShowFeedback(false); setShowScope(false); };
   const cancelFeedback = () => { setShowFeedback(false); setShowScope(false); setFeedback(""); };
 
-  const scopeLabels = lang === "sv"
-    ? { only: "Bara detta beat", forward: "Detta beat + alla efterföljande" }
-    : { only: "This beat only", forward: "This beat + all following" };
-
   return (
-    <div style={{ display: "flex", gap: "16px", marginBottom: "20px", opacity: isRegenerating && !beat ? 0.35 : 1, animation: `fadeIn 0.35s ease ${index * 0.04}s both` }}>
-      <div style={{ width: "2px", background: color, borderRadius: "2px", flexShrink: 0, marginTop: "3px" }} />
+    <div style={{ display: "flex", gap: "16px", marginBottom: "24px", opacity: isRegenerating && !beat ? 0.35 : 1, animation: `fadeIn 0.35s ease ${index * 0.04}s both` }}>
+      <div style={{ width: "3px", background: color, borderRadius: "2px", flexShrink: 0, marginTop: "4px" }} />
       <div style={{ flex: 1 }}>
-        {/* Label row */}
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "5px" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-            <span style={{ fontSize: "10px", fontFamily: "'Courier Prime', monospace", color, letterSpacing: "1.5px", textTransform: "uppercase" }}>{label}</span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <span style={{ fontSize: "13px", fontFamily: F.serif, color, fontWeight: "400" }}>{label}</span>
             {explanation && (
               <button onClick={() => setShowExplanation(s => !s)} title={t.beatStep.whatIsThis} style={{
-                background: showExplanation ? "rgba(0,0,0,0.08)" : "none",
-                border: `1px solid ${showExplanation ? C.borderHov : C.inkFaint}`,
-                borderRadius: "50%", width: "15px", height: "15px", cursor: "pointer",
-                color: showExplanation ? C.ink : C.inkFaint, fontSize: "9px",
-                fontFamily: "'Courier Prime', monospace", display: "flex", alignItems: "center",
+                background: showExplanation ? C.ink : "none",
+                border: `1px solid ${showExplanation ? C.ink : C.border}`,
+                borderRadius: "50%", width: "18px", height: "18px", cursor: "pointer",
+                color: showExplanation ? "#fff" : C.inkDim, fontSize: "11px",
+                fontFamily: F.serif, display: "flex", alignItems: "center",
                 justifyContent: "center", transition: "all 0.15s", flexShrink: 0, padding: 0,
               }}>i</button>
             )}
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <span style={{ fontSize: "10px", color: C.inkFaint }}>{pct}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <span style={{ fontSize: "12px", color: C.inkFaint, fontFamily: F.serif }}>{pct}</span>
             {beat && !isRegenerating && !showScope && (
               <button onClick={() => showFeedback ? cancelFeedback() : setShowFeedback(true)} style={{
-                background: "none", border: "none", cursor: "pointer",
-                color: showFeedback ? C.inkDim : C.inkFaint,
-                fontFamily: "'Courier Prime', monospace", fontSize: "9px", letterSpacing: "1px",
-                padding: "2px 0", transition: "color 0.15s",
+                background: showFeedback ? C.surface : "none",
+                border: `1px solid ${showFeedback ? C.border : C.border}`,
+                borderRadius: "4px", cursor: "pointer", color: C.inkDim,
+                fontFamily: F.serif, fontSize: "13px", padding: "3px 10px", transition: "all 0.15s",
               }}>
-                {showFeedback ? (lang === "sv" ? "AVBRYT" : "CANCEL") : (lang === "sv" ? "GE FEEDBACK" : "GIVE FEEDBACK")}
+                {showFeedback ? t.beatStep.cancel : t.beatStep.giveFeedback}
               </button>
             )}
           </div>
         </div>
 
-        {/* Explanation panel */}
         {showExplanation && explanation && (
-          <div style={{ background: "rgba(0,0,0,0.03)", border: `1px solid ${C.border}`, borderRadius: "5px", padding: "12px 14px", marginBottom: "8px", animation: "fadeIn 0.2s ease" }}>
-            <p style={{ margin: 0, fontSize: "12px", color: C.inkDim, lineHeight: 1.65, fontStyle: "italic" }}>{explanation}</p>
+          <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "5px", padding: "12px 14px", marginBottom: "10px", animation: "fadeIn 0.2s ease" }}>
+            <p style={{ margin: 0, fontSize: "14px", color: C.inkDim, lineHeight: 1.65, fontStyle: "italic", fontFamily: F.serif }}>{explanation}</p>
           </div>
         )}
 
-        {/* Beat text */}
         {isRegenerating && !beat
-          ? <p style={{ margin: 0, color: C.inkFaint, fontSize: "13px", fontFamily: "'Courier Prime', monospace", letterSpacing: "0.5px" }}>
-              {isFirst ? (t.beatStep.regenerating || "Regenererar…").replace("{n}", index + 1) : "…"}
-            </p>
-          : <p style={{ margin: 0, color: "#2a2a28", fontSize: "14px", lineHeight: 1.65, fontFamily: "Georgia, serif" }}>{beat || placeholder}</p>
+          ? <p style={{ margin: 0, color: C.inkFaint, fontSize: "15px", fontFamily: F.serif, fontStyle: "italic" }}>{isFirst ? t.beatStep.regenerating : "…"}</p>
+          : <p style={{ margin: 0, color: C.ink, fontSize: "16px", lineHeight: 1.7, fontFamily: F.serif }}>{beat || placeholder}</p>
         }
 
-        {/* Feedback textarea */}
         {showFeedback && !showScope && (
-          <div style={{ marginTop: "10px", animation: "fadeIn 0.2s ease" }}>
-            <textarea
-              value={feedback}
-              onChange={e => setFeedback(e.target.value)}
-              placeholder={t.beatStep.feedbackPlaceholder}
-              rows={2}
-              style={{ ...inputStyle, fontSize: "13px", resize: "none", marginBottom: "8px" }}
+          <div style={{ marginTop: "12px", animation: "fadeIn 0.2s ease" }}>
+            <textarea value={feedback} onChange={e => setFeedback(e.target.value)}
+              placeholder={t.beatStep.feedbackPlaceholder} rows={2}
+              style={{ ...inputStyle, fontSize: "15px", resize: "none", marginBottom: "10px" }}
               onKeyDown={e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleFeedbackSubmit(); }}
-              autoFocus
-            />
-            <button onClick={handleFeedbackSubmit} disabled={!feedback.trim()} style={{ ...btnPrimary(!!feedback.trim()), padding: "8px 16px", fontSize: "10px" }}>
-              {lang === "sv" ? "FORTSÄTT →" : "CONTINUE →"}
+              autoFocus />
+            <button onClick={handleFeedbackSubmit} disabled={!feedback.trim()} style={{ ...btnPrimary(!!feedback.trim()), padding: "10px 20px", fontSize: "14px" }}>
+              {t.beatStep.feedbackBtn}
             </button>
           </div>
         )}
 
-        {/* Scope choice */}
         {showScope && (
-          <div style={{ marginTop: "10px", animation: "fadeIn 0.2s ease" }}>
-            <p style={{ margin: "0 0 10px", fontSize: "11px", color: C.inkDim, fontFamily: "'Courier Prime', monospace", letterSpacing: "0.5px" }}>
-              {lang === "sv" ? "Hur mycket ska regenereras?" : "How much should be regenerated?"}
-            </p>
+          <div style={{ marginTop: "12px", animation: "fadeIn 0.2s ease" }}>
+            <p style={{ margin: "0 0 10px", fontSize: "14px", color: C.inkDim, fontFamily: F.serif }}>{t.beatStep.scopeQuestion}</p>
             <div className="r-col-mobile" style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-              <button onClick={() => handleScope("only")} style={{
-                background: "rgba(0,0,0,0.04)", border: `1px solid ${C.border}`,
-                borderRadius: "5px", padding: "10px 16px", cursor: "pointer",
-                fontFamily: "'Courier Prime', monospace", fontSize: "10px", letterSpacing: "1px",
-                color: C.ink, transition: "all 0.15s", textAlign: "left",
-              }}>
-                <div style={{ marginBottom: "3px" }}>{scopeLabels.only}</div>
-                <div style={{ fontSize: "9px", color: C.inkDim }}>{lang === "sv" ? "Resten behålls" : "Rest stays unchanged"}</div>
-              </button>
-              <button onClick={() => handleScope("forward")} style={{
-                background: "rgba(0,0,0,0.04)", border: `1px solid ${C.border}`,
-                borderRadius: "5px", padding: "10px 16px", cursor: "pointer",
-                fontFamily: "'Courier Prime', monospace", fontSize: "10px", letterSpacing: "1px",
-                color: C.ink, transition: "all 0.15s", textAlign: "left",
-              }}>
-                <div style={{ marginBottom: "3px" }}>{scopeLabels.forward}</div>
-                <div style={{ fontSize: "9px", color: C.inkDim }}>{lang === "sv" ? "Anpassar hela slutet" : "Adapts the rest to match"}</div>
-              </button>
-              <button onClick={cancelFeedback} style={{ background: "none", border: "none", cursor: "pointer", color: C.inkFaint, fontFamily: "'Courier Prime', monospace", fontSize: "9px", letterSpacing: "1px", padding: "10px 8px" }}>
-                {lang === "sv" ? "AVBRYT" : "CANCEL"}
+              {[
+                { scope: "only", label: t.beatStep.scopeOnly, sub: t.beatStep.scopeOnlySub },
+                { scope: "forward", label: t.beatStep.scopeForward, sub: t.beatStep.scopeForwardSub },
+              ].map(({ scope, label, sub }) => (
+                <button key={scope} onClick={() => handleScope(scope)} style={{
+                  background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px",
+                  padding: "12px 16px", cursor: "pointer", fontFamily: F.serif, textAlign: "left", transition: "border-color 0.15s",
+                }}>
+                  <div style={{ fontSize: "14px", color: C.ink, marginBottom: "3px" }}>{label}</div>
+                  <div style={{ fontSize: "12px", color: C.inkDim }}>{sub}</div>
+                </button>
+              ))}
+              <button onClick={cancelFeedback} style={{ background: "none", border: "none", cursor: "pointer", color: C.inkDim, fontFamily: F.serif, fontSize: "14px", padding: "12px 8px" }}>
+                {t.beatStep.cancel}
               </button>
             </div>
           </div>
@@ -469,18 +597,14 @@ const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerat
   );
 };
 
-
 // ─── EXPORT BAR ───────────────────────────────────────────────────────────────
 const ExportBar = ({ beats, beatLabels, idea, modelInfo, lang, t }) => {
   const [exporting, setExporting] = useState(null);
-
-  const filename = (idea.title || (lang === "sv" ? "beat-sheet" : "beat-sheet"))
-    .toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
+  const filename = (idea.title || "beat-sheet").toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9\-]/g, "");
 
   const exportPDF = async () => {
     setExporting("pdf");
     try {
-      // Load jsPDF from CDN
       await new Promise((resolve, reject) => {
         if (window.jspdf) { resolve(); return; }
         const s = document.createElement("script");
@@ -492,52 +616,26 @@ const ExportBar = ({ beats, beatLabels, idea, modelInfo, lang, t }) => {
       const doc = new jsPDF({ unit: "mm", format: "a4" });
       const W = 210, margin = 20, col = W - margin * 2;
       let y = margin;
-
       const addText = (text, size, color, bold, maxW, lineH) => {
-        doc.setFontSize(size);
-        doc.setTextColor(...color);
+        doc.setFontSize(size); doc.setTextColor(...color);
         doc.setFont("helvetica", bold ? "bold" : "normal");
-        const lines = doc.splitTextToSize(text, maxW || col);
-        lines.forEach(line => {
+        doc.splitTextToSize(text, maxW || col).forEach(line => {
           if (y > 277) { doc.addPage(); y = margin; }
-          doc.text(line, margin, y);
-          y += lineH || (size * 0.4);
+          doc.text(line, margin, y); y += lineH || (size * 0.4);
         });
       };
-
-      // Title
-      addText(idea.title || (lang === "sv" ? "Beat Sheet" : "Beat Sheet"), 22, [30,30,28], true, col, 9);
-      y += 2;
-      addText(`"${idea.logline}"`, 10, [120,120,115], false, col, 5);
-      y += 2;
-      addText(modelInfo?.name || "", 8, [160,160,155], false, col, 4);
-      y += 6;
-
-      // Divider
-      doc.setDrawColor(80,80,75); doc.setLineWidth(0.3);
-      doc.line(margin, y, W - margin, y); y += 8;
-
-      // Beats
+      addText(idea.title || "Beat Sheet", 22, [17, 17, 16], true, col, 9); y += 2;
+      addText(`"${idea.logline}"`, 10, [85, 85, 80], false, col, 5); y += 2;
+      addText(modelInfo?.name || "", 8, [120, 120, 115], false, col, 4); y += 6;
+      doc.setDrawColor(180, 178, 170); doc.setLineWidth(0.3); doc.line(margin, y, W - margin, y); y += 8;
       beatLabels.forEach(b => {
-        const beatText = beats[b.id];
-        if (!beatText) return;
+        const beatText = beats[b.id]; if (!beatText) return;
         if (y > 265) { doc.addPage(); y = margin; }
-        addText(b.label.toUpperCase(), 7.5, [100,100,95], true, col * 0.6, 4);
-        y += 1;
-        addText(beatText, 10, [40,40,38], false, col, 5);
-        y += 5;
+        addText(b.label, 8, [80, 80, 75], true, col * 0.6, 4); y += 1;
+        addText(beatText, 10, [40, 40, 38], false, col, 5); y += 5;
       });
-
-      // Footer
-      if (y > 270) { doc.addPage(); y = margin; }
-      y += 4;
-      doc.setDrawColor(80,80,75); doc.setLineWidth(0.2);
-      doc.line(margin, y, W - margin, y); y += 5;
-      addText("DRAMATURG — AI STORY STRUCTURE ASSISTANT", 7, [160,160,155], false, col, 4);
-
       doc.save(`${filename}.pdf`);
-    } catch(e) { console.error(e); }
-    finally { setExporting(null); }
+    } catch(e) { console.error(e); } finally { setExporting(null); }
   };
 
   const exportDOCX = async () => {
@@ -547,185 +645,120 @@ const ExportBar = ({ beats, beatLabels, idea, modelInfo, lang, t }) => {
         if (window.docx) { resolve(); return; }
         const s = document.createElement("script");
         s.src = "https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.umd.min.js";
-        s.onload = resolve; s.onerror = reject;
-        document.head.appendChild(s);
+        s.onload = resolve; s.onerror = reject; document.head.appendChild(s);
       });
-      const { Document, Paragraph, TextRun, HeadingLevel, Packer, AlignmentType, BorderStyle } = window.docx;
-
-      const children = [];
-
-      // Title
-      children.push(new Paragraph({
-        children: [new TextRun({ text: idea.title || "Beat Sheet", bold: true, size: 44, color: "1e1e1c" })],
-        spacing: { after: 80 },
-      }));
-      // Logline
-      children.push(new Paragraph({
-        children: [new TextRun({ text: `"${idea.logline}"`, italics: true, size: 20, color: "666660" })],
-        spacing: { after: 60 },
-      }));
-      // Model
-      children.push(new Paragraph({
-        children: [new TextRun({ text: modelInfo?.name || "", size: 16, color: "888880" })],
-        spacing: { after: 200 },
-      }));
-
-      // Beats
+      const { Document, Paragraph, TextRun, Packer } = window.docx;
+      const children = [
+        new Paragraph({ children: [new TextRun({ text: idea.title || "Beat Sheet", bold: true, size: 44, color: "111110" })], spacing: { after: 80 } }),
+        new Paragraph({ children: [new TextRun({ text: `"${idea.logline}"`, italics: true, size: 20, color: "555550" })], spacing: { after: 60 } }),
+        new Paragraph({ children: [new TextRun({ text: modelInfo?.name || "", size: 16, color: "888880" })], spacing: { after: 200 } }),
+      ];
       beatLabels.forEach(b => {
-        const beatText = beats[b.id];
-        if (!beatText) return;
-        children.push(new Paragraph({
-          children: [new TextRun({ text: b.label.toUpperCase(), bold: true, size: 16, color: "555550" })],
-          spacing: { before: 240, after: 60 },
-        }));
-        children.push(new Paragraph({
-          children: [new TextRun({ text: beatText, size: 22, color: "2a2a28" })],
-          spacing: { after: 80 },
-        }));
+        const beatText = beats[b.id]; if (!beatText) return;
+        children.push(new Paragraph({ children: [new TextRun({ text: b.label, bold: true, size: 18, color: "333330" })], spacing: { before: 240, after: 60 } }));
+        children.push(new Paragraph({ children: [new TextRun({ text: beatText, size: 22, color: "111110" })], spacing: { after: 80 } }));
       });
-
-      // Footer
-      children.push(new Paragraph({
-        children: [new TextRun({ text: "DRAMATURG — AI STORY STRUCTURE ASSISTANT", size: 14, color: "aaaaaa" })],
-        spacing: { before: 400 },
-      }));
-
       const doc = new Document({ sections: [{ children }] });
       const blob = await Packer.toBlob(doc);
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a"); a.href = url; a.download = `${filename}.docx`; a.click();
       URL.revokeObjectURL(url);
-    } catch(e) { console.error(e); }
-    finally { setExporting(null); }
+    } catch(e) { console.error(e); } finally { setExporting(null); }
   };
 
-  const btnStyle = (active) => ({
-    background: active ? "rgba(0,0,0,0.07)" : C.surface,
-    border: `1px solid ${active ? C.borderHov : C.border}`,
-    color: active ? C.ink : C.inkDim, borderRadius: "5px",
-    padding: "10px 18px", cursor: active ? "pointer" : "default",
-    fontFamily: "'Courier Prime', monospace", fontSize: "10px",
-    letterSpacing: "1.5px", display: "flex", alignItems: "center", gap: "8px",
-    transition: "all 0.18s",
-  });
+  const eb = (onClick, label, loading) => (
+    <button onClick={onClick} disabled={!!exporting} style={{
+      background: "#fff", border: `1px solid ${C.border}`, color: exporting ? C.inkFaint : C.inkDim,
+      borderRadius: "6px", padding: "10px 18px", cursor: exporting ? "default" : "pointer",
+      fontFamily: F.serif, fontSize: "14px", display: "flex", alignItems: "center", gap: "8px", transition: "all 0.18s",
+    }}>
+      {loading ? <><span style={{ width: "12px", height: "12px", border: `1.5px solid ${C.inkFaint}`, borderTopColor: C.ink, borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} />{label}</> : label}
+    </button>
+  );
 
   return (
-    <div className="r-wrap" style={{ marginTop: "36px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
-      <span style={{ fontFamily: "'Courier Prime', monospace", fontSize: "9px", color: C.inkFaint, letterSpacing: "1.5px", marginRight: "4px" }}>
-        {lang === "sv" ? "EXPORTERA:" : "EXPORT:"}
+    <div style={{ marginTop: "36px", display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+      <span style={{ fontSize: "14px", color: C.inkDim, fontFamily: F.serif, marginRight: "4px" }}>
+        {lang === "sv" ? "Exportera:" : "Export:"}
       </span>
-      <button onClick={exportPDF} disabled={!!exporting} style={btnStyle(!exporting)}>
-        {exporting === "pdf"
-          ? <><span style={{ width: "10px", height: "10px", border: `1.5px solid ${C.inkFaint}`, borderTopColor: C.accent, borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} /> {lang === "sv" ? "Skapar PDF…" : "Creating PDF…"}</>
-          : "↓ PDF"
-        }
-      </button>
-      <button onClick={exportDOCX} disabled={!!exporting} style={btnStyle(!exporting)}>
-        {exporting === "docx"
-          ? <><span style={{ width: "10px", height: "10px", border: `1.5px solid ${C.inkFaint}`, borderTopColor: C.accent, borderRadius: "50%", display: "inline-block", animation: "spin 0.8s linear infinite" }} /> {lang === "sv" ? "Skapar Word…" : "Creating Word…"}</>
-          : "↓ WORD (.docx)"
-        }
-      </button>
+      {eb(exportPDF, exporting === "pdf" ? (lang === "sv" ? "Skapar PDF…" : "Creating PDF…") : "↓ PDF", exporting === "pdf")}
+      {eb(exportDOCX, exporting === "docx" ? (lang === "sv" ? "Skapar Word…" : "Creating Word…") : "↓ Word (.docx)", exporting === "docx")}
     </div>
   );
 };
 
+// ─── LANG OPTION ─────────────────────────────────────────────────────────────
 const LangOption = ({ lang, label, selected, onSelect }) => (
-  <button onClick={() => onSelect(lang)} style={{ background: selected ? "rgba(0,0,0,0.06)" : C.surface, border: `1px solid ${selected ? C.borderHov : C.border}`, borderRadius: "8px", padding: "24px 32px", cursor: "pointer", textAlign: "center", transition: "all 0.18s", flex: 1 }}>
-    <div style={{ fontFamily: "'Courier Prime', monospace", fontSize: "13px", letterSpacing: "3px", fontWeight: "700", color: selected ? C.ink : C.inkDim, marginBottom: "8px" }}>{lang.toUpperCase()}</div>
-    <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 400, color: selected ? C.ink : C.inkDim }}>{label}</div>
+  <button onClick={() => onSelect(lang)} style={{
+    background: selected ? C.ink : "#fff",
+    border: `2px solid ${selected ? C.ink : C.border}`,
+    borderRadius: "8px", padding: "20px 32px", cursor: "pointer", textAlign: "center",
+    transition: "all 0.18s", flex: 1,
+  }}>
+    <div style={{ fontFamily: F.serif, fontSize: "13px", fontWeight: "400", color: selected ? "rgba(255,255,255,0.7)" : C.inkDim, marginBottom: "6px" }}>{lang.toUpperCase()}</div>
+    <div style={{ fontFamily: F.serif, fontSize: "20px", color: selected ? "#fff" : C.ink }}>{label}</div>
   </button>
 );
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [lang,            setLang]           = useState("sv");
-  const [model,           setModel]          = useState("save_the_cat");
-  const [step,            setStep]           = useState(0);
-  const [idea,            setIdea]           = useState({ title: "", logline: "", genre: "", tone: "" });
-  const [characters,      setCharacters]     = useState([{ name: "", role: "", description: "" }]);
-  const [beats,           setBeats]          = useState({});
-  const [loading,         setLoading]        = useState(false);
-  const [regeneratingFrom,setRegeneratingFrom] = useState(null);
-  const [error,           setError]          = useState("");
+  const [lang, setLang] = useState("sv");
+  const [model, setModel] = useState("save_the_cat");
+  const [step, setStep] = useState(0); // 0=lang, 1=model, 2=idea, 3=chars, 4=beats
+  const [idea, setIdea] = useState({ title: "", logline: "", genre: "", tone: "" });
+  const [characters, setCharacters] = useState([{ name: "", role: "", description: "" }]);
+  const [beats, setBeats] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [regeneratingFrom, setRegeneratingFrom] = useState(null);
+  const [error, setError] = useState("");
 
-  const t          = T[lang];
-  const models     = MODELS[lang];
+  const t = T[lang];
+  const models = MODELS[lang];
   const beatLabels = BEAT_LABELS[model][lang];
-  const modelInfo  = models.find(m => m.id === model);
+  const modelInfo = models.find(m => m.id === model);
 
-  const addCharacter    = () => setCharacters([...characters, { name: "", role: "", description: "" }]);
+  const addCharacter = () => setCharacters([...characters, { name: "", role: "", description: "" }]);
   const removeCharacter = (i) => setCharacters(characters.filter((_, idx) => idx !== i));
   const updateCharacter = (i, field, val) => { const u = [...characters]; u[i] = { ...u[i], [field]: val }; setCharacters(u); };
-  const resetAll = () => { setStep(0); setBeats({}); setError(""); setModel("save_the_cat"); setRegeneratingFrom(null); setIdea({ title: "", logline: "", genre: "", tone: "" }); setCharacters([{ name: "", role: "", description: "" }]); };
+  const resetAll = () => {
+    setStep(0); setBeats({}); setError(""); setModel("save_the_cat"); setRegeneratingFrom(null);
+    setIdea({ title: "", logline: "", genre: "", tone: "" });
+    setCharacters([{ name: "", role: "", description: "" }]);
+  };
 
   const buildPrompt = (extraInstruction = null, fromIndex = null) => {
-    const charText  = characters.filter(c => c.name).map(c => `${c.name} (${c.role}): ${c.description}`).join("\n");
-    const allKeys   = beatLabels.map(b => b.id);
+    const charText = characters.filter(c => c.name).map(c => `${c.name} (${c.role}): ${c.description}`).join("\n");
+    const allKeys = beatLabels.map(b => b.id);
     const modelName = modelInfo?.name || model;
-
     if (fromIndex !== null && extraInstruction) {
       const confirmedBeats = beatLabels.slice(0, fromIndex).map(b => `${b.id}: "${beats[b.id] || ""}"`).join("\n");
       const regenKeys = beatLabels.slice(fromIndex).map(b => b.id).join(", ");
       return lang === "sv"
-        ? `Du är en expert på dramaturgi och berättarstrukturer.
-
-Berättelse:
-Titel: ${idea.title || "Okänd"} | Genre: ${idea.genre || "Okänd"} | Ton: ${idea.tone || "Okänd"}
-Logline: ${idea.logline}
-Karaktärer: ${charText || "Inga"}
-Modell: ${modelName}
-
-Redan godkända beats (ÄNDRA INTE DESSA):
-${confirmedBeats}
-
-Feedback på beat "${beatLabels[fromIndex].label}": ${extraInstruction}
-
-Regenerera alla beats från och med "${beatLabels[fromIndex].label}" och framåt, med hänsyn till feedbacken och så att de hänger ihop med de godkända beats ovan.
-Svara ENBART med ett JSON-objekt med dessa nycklar: ${regenKeys}`
-        : `You are an expert in dramaturgy and story structure.
-
-Story:
-Title: ${idea.title || "Unknown"} | Genre: ${idea.genre || "Unknown"} | Tone: ${idea.tone || "Unknown"}
-Logline: ${idea.logline}
-Characters: ${charText || "None"}
-Model: ${modelName}
-
-Already approved beats (DO NOT CHANGE THESE):
-${confirmedBeats}
-
-Feedback on beat "${beatLabels[fromIndex].label}": ${extraInstruction}
-
-Regenerate all beats from "${beatLabels[fromIndex].label}" onward, taking the feedback into account and ensuring they cohere with the approved beats above.
-Respond ONLY with a JSON object with these keys: ${regenKeys}`;
+        ? `Du är en expert på dramaturgi.\n\nBerättelse: Titel: ${idea.title || "Okänd"} | Genre: ${idea.genre || "Okänd"} | Ton: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\nKaraktärer: ${charText || "Inga"}\nModell: ${modelName}\n\nGodkända beats:\n${confirmedBeats}\n\nFeedback på "${beatLabels[fromIndex].label}": ${extraInstruction}\n\nRegenerera från "${beatLabels[fromIndex].label}" och framåt. Svara ENBART med JSON: ${regenKeys}`
+        : `You are an expert in dramaturgy.\n\nStory: Title: ${idea.title || "Unknown"} | Genre: ${idea.genre || "Unknown"} | Tone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\nCharacters: ${charText || "None"}\nModel: ${modelName}\n\nApproved beats:\n${confirmedBeats}\n\nFeedback on "${beatLabels[fromIndex].label}": ${extraInstruction}\n\nRegenerate from "${beatLabels[fromIndex].label}" onward. Respond ONLY with JSON keys: ${regenKeys}`;
     }
-
     return lang === "sv"
-      ? `Du är en expert på dramaturgi och berättarstrukturer.\n\nEn författare arbetar med:\nTitel: ${idea.title || "Okänd"}\nGenre: ${idea.genre || "Okänd"}\nTon: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\n\nKaraktärer:\n${charText || "Inga"}\n\nModell: ${modelName}\n\nGenerera ett komplett beat sheet på SVENSKA. Svara ENBART med JSON (inga backticks) med dessa nycklar:\n${allKeys.join(", ")}\n\nVarje värde: 2–4 meningar, specifika för just den här berättelsen.`
-      : `You are an expert in dramaturgy and story structure.\n\nWriter's story:\nTitle: ${idea.title || "Unknown"}\nGenre: ${idea.genre || "Unknown"}\nTone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\n\nCharacters:\n${charText || "None"}\n\nModel: ${modelName}\n\nGenerate a complete beat sheet in ENGLISH. Respond ONLY with JSON (no backticks) with these keys:\n${allKeys.join(", ")}\n\nEach value: 2–4 sentences specific to this story.`;
+      ? `Du är en expert på dramaturgi.\n\nBerättelse:\nTitel: ${idea.title || "Okänd"}\nGenre: ${idea.genre || "Okänd"}\nTon: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\n\nKaraktärer:\n${charText || "Inga"}\n\nModell: ${modelName}\n\nGenerera ett komplett beat sheet på SVENSKA. Svara ENBART med JSON (inga backticks) med dessa nycklar:\n${allKeys.join(", ")}\n\nVarje värde: 2–4 meningar, specifika för just den här berättelsen.`
+      : `You are an expert in dramaturgy.\n\nStory:\nTitle: ${idea.title || "Unknown"}\nGenre: ${idea.genre || "Unknown"}\nTone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\n\nCharacters:\n${charText || "None"}\n\nModel: ${modelName}\n\nGenerate a complete beat sheet in ENGLISH. Respond ONLY with JSON (no backticks) with these keys:\n${allKeys.join(", ")}\n\nEach value: 2–4 sentences specific to this story.`;
   };
 
   const callAPI = async (prompt, mergeKeys = null) => {
     const response = await fetch("/api/anthropic/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
     });
-    const data  = await response.json();
-    const text  = data.content?.map(i => i.text || "").join("") || "";
-    const clean = text.replace(/```json|```/g, "").trim();
-    const parsed = JSON.parse(clean);
-    if (mergeKeys) {
-      setBeats(prev => ({ ...prev, ...parsed }));
-    } else {
-      setBeats(parsed);
-    }
+    if (response.status === 529 || response.status === 503) throw new Error("overloaded");
+    const data = await response.json();
+    const text = data.content?.map(i => i.text || "").join("") || "";
+    const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+    if (mergeKeys) setBeats(prev => ({ ...prev, ...parsed }));
+    else setBeats(parsed);
   };
 
   const generateBeats = async () => {
     setLoading(true); setError(""); setBeats({}); setRegeneratingFrom(null); setStep(4);
     try { await callAPI(buildPrompt()); }
-    catch { setError(t.beatStep.error); }
+    catch(e) { setError(e.message === "overloaded" ? t.beatStep.error503 : t.beatStep.error); }
     finally { setLoading(false); }
   };
 
@@ -733,132 +766,164 @@ Respond ONLY with a JSON object with these keys: ${regenKeys}`;
     setError("");
     const isOnly = scope === "only";
     const endIndex = isOnly ? fromIndex + 1 : beatLabels.length;
-
-    setBeats(prev => {
-      const next = { ...prev };
-      beatLabels.slice(fromIndex, endIndex).forEach(b => delete next[b.id]);
-      return next;
-    });
+    setBeats(prev => { const next = { ...prev }; beatLabels.slice(fromIndex, endIndex).forEach(b => delete next[b.id]); return next; });
     setRegeneratingFrom(fromIndex);
-
     try {
       if (isOnly) {
-        const charText  = characters.filter(c => c.name).map(c => `${c.name} (${c.role}): ${c.description}`).join("\n");
-        const modelName = modelInfo?.name || model;
-        const beatId    = beatLabels[fromIndex].id;
-        const beatName  = beatLabels[fromIndex].label;
-        const surroundingBeats = beatLabels
-          .filter((_, i) => Math.abs(i - fromIndex) <= 2 && i !== fromIndex)
-          .map(b => `${b.label}: "${beats[b.id] || ""}"`)
-          .join("\n");
+        const charText = characters.filter(c => c.name).map(c => `${c.name} (${c.role}): ${c.description}`).join("\n");
+        const beatId = beatLabels[fromIndex].id;
+        const beatName = beatLabels[fromIndex].label;
+        const surroundingBeats = beatLabels.filter((_, i) => Math.abs(i - fromIndex) <= 2 && i !== fromIndex).map(b => `${b.label}: "${beats[b.id] || ""}"`).join("\n");
         const prompt = lang === "sv"
-          ? `Du är en expert på dramaturgi.\n\nBerättelse:\nTitel: ${idea.title || "Okänd"} | Genre: ${idea.genre || "Okänd"} | Ton: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\nKaraktärer: ${charText || "Inga"}\nModell: ${modelName}\n\nNärliggande beats för kontext:\n${surroundingBeats}\n\nFeedback på beatet "${beatName}": ${feedback}\n\nRegenerera BARA detta enstaka beat. Svara ENBART med JSON (inga backticks): {"${beatId}": "..."}\n2–4 meningar, specifikt för berättelsen.`
-          : `You are an expert in dramaturgy.\n\nStory:\nTitle: ${idea.title || "Unknown"} | Genre: ${idea.genre || "Unknown"} | Tone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\nCharacters: ${charText || "None"}\nModel: ${modelName}\n\nNearby beats for context:\n${surroundingBeats}\n\nFeedback on beat "${beatName}": ${feedback}\n\nRegenerate ONLY this single beat. Respond ONLY with JSON (no backticks): {"${beatId}": "..."}\n2–4 sentences, specific to this story.`;
+          ? `Du är en expert på dramaturgi.\n\nBerättelse: ${idea.title || "Okänd"} | ${idea.genre || "Okänd"} | ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\nKaraktärer: ${charText || "Inga"}\n\nNärliggande beats:\n${surroundingBeats}\n\nFeedback på "${beatName}": ${feedback}\n\nRegenerera BARA detta beat. Svara ENBART med JSON: {"${beatId}": "..."}\n2–4 meningar, specifikt för berättelsen.`
+          : `You are a dramaturgy expert.\n\nStory: ${idea.title || "Unknown"} | ${idea.genre || "Unknown"} | ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\nCharacters: ${charText || "None"}\n\nNearby beats:\n${surroundingBeats}\n\nFeedback on "${beatName}": ${feedback}\n\nRegenerate ONLY this beat. Respond ONLY with JSON: {"${beatId}": "..."}\n2–4 sentences, specific to this story.`;
         await callAPI(prompt, [beatId]);
       } else {
-        const regenKeys = beatLabels.slice(fromIndex).map(b => b.id);
-        await callAPI(buildPrompt(feedback, fromIndex), regenKeys);
+        await callAPI(buildPrompt(feedback, fromIndex), beatLabels.slice(fromIndex).map(b => b.id));
       }
-    } catch { setError(t.beatStep.error); }
+    } catch(e) { setError(e.message === "overloaded" ? t.beatStep.error503 : t.beatStep.error); }
     finally { setRegeneratingFrom(null); }
   };
 
-  const canProceedIdea  = idea.logline.length > 20;
+  const canProceedIdea = idea.logline.length > 20;
   const canProceedChars = characters.some(c => c.name);
-  const visibleSteps    = t.steps.slice(1);
+  const visibleSteps = t.steps; // ["Modell","Idé","Karaktärer","Beat Sheet"]
 
   return (
-    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: "Georgia, serif", color: C.ink }}>
+    <div style={{ minHeight: "100vh", background: C.bg, fontFamily: F.serif, color: C.ink }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Courier+Prime&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
         * { box-sizing: border-box; }
         input:focus, textarea:focus, select:focus { border-color: rgba(0,0,0,0.5) !important; }
-        input::placeholder, textarea::placeholder { color: #aaa; }
-        select option { background: #f5f2ed; color: #1a1a18; }
+        input::placeholder, textarea::placeholder { color: #999997; }
+        select option { background: #fff; color: #111110; }
         @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
         @keyframes spin   { to { transform:rotate(360deg); } }
-        ::-webkit-scrollbar { width:3px; } ::-webkit-scrollbar-thumb { background:#ccc; }
-
-        /* ── RESPONSIVE ── */
-        .r-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        ::-webkit-scrollbar { width:4px; } ::-webkit-scrollbar-thumb { background:#ccc; }
+        .r-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .r-grid2-sm { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         @media (max-width: 600px) {
           .r-grid2 { grid-template-columns: 1fr !important; }
           .r-grid2-sm { grid-template-columns: 1fr !important; }
           .r-hide-mobile { display: none !important; }
           .r-col-mobile { flex-direction: column !important; }
-          .r-pad { padding: 28px 18px !important; }
-          .r-pad-start { padding: 40px 18px !important; }
+          .r-pad { padding: 24px 18px !important; }
           .r-header { padding: 14px 18px !important; }
           .r-lang-row { flex-direction: column !important; }
-          .r-wrap { flex-wrap: wrap !important; }
-          .r-full { width: 100% !important; }
           .r-title { font-size: 26px !important; }
-          .r-h1 { font-size: 34px !important; letter-spacing: 4px !important; }
         }
       `}</style>
 
+      {/* ── HEADER (step > 0) ── */}
       {step > 0 && (
-        <div className="r-header" style={{ borderBottom: `1px solid ${C.border}`, padding: "18px 40px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <div style={{ cursor: "pointer" }} onClick={resetAll}>
-            <h1 style={{ margin: 0, fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 600, letterSpacing: "4px", color: C.ink }}>DRAMATURG</h1>
-            <p style={{ margin: "2px 0 0", fontSize: "10px", color: C.ink, fontFamily: "'Courier Prime', monospace", letterSpacing: "2px", fontWeight: "700" }}>{t.appSubtitle}</p>
+        <div className="r-header" style={{ borderBottom: `1px solid ${C.border}`, padding: "12px 40px", background: "#fff" }}>
+          {/* Logo */}
+          <div style={{ cursor: "pointer", marginBottom: "6px", display: "flex", alignItems: "center", gap: "10px" }} onClick={resetAll}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="22" height="22" style={{ flexShrink: 0, opacity: 0.85 }}>
+              <path d="M12 49 Q12 56 20 56 Q28 56 28 49 L27 44 Q23 41 20 41 Q17 41 13 44 Z" fill="#1a1a18"/>
+              <ellipse cx="20" cy="44" rx="8" ry="3" fill="#3a3a34"/>
+              <line x1="20" y1="44" x2="54" y2="8" stroke="#1a1a18" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M54 8 Q47 14 41 20 Q38 17 40 13 Q47 9 54 8Z" fill="#2a2a28" opacity="0.85"/>
+              <path d="M48 14 Q41 21 35 28 Q32 25 34 21 Q41 16 48 14Z" fill="#3a3a34" opacity="0.8"/>
+              <path d="M42 20 Q35 28 29 35 Q26 32 28 28 Q35 23 42 20Z" fill="#2a2a28" opacity="0.85"/>
+              <path d="M36 27 Q29 35 23 42 Q20 39 22 35 Q29 30 36 27Z" fill="#3a3a34" opacity="0.8"/>
+              <path d="M54 8 Q47 11 40 16 Q38 12 41 9 Q48 6 54 8Z" fill="#6a6a62" opacity="0.6"/>
+              <path d="M48 14 Q41 18 34 23 Q32 19 35 16 Q42 12 48 14Z" fill="#888880" opacity="0.55"/>
+              <path d="M42 20 Q35 24 28 30 Q26 26 29 23 Q36 18 42 20Z" fill="#6a6a62" opacity="0.6"/>
+              <path d="M20 44 L17 50 L20 47 L23 50 Z" fill="#1a1a18"/>
+            </svg>
+            <span style={{ fontFamily: F.serif, fontSize: "18px", fontWeight: "400", color: C.ink }}>Dramaturg</span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+          {/* Breadcrumbs — below logo */}
+          <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
             {visibleSteps.map((s, i) => {
-              const active = step === i + 1, done = step > i + 1;
+              const stepNum = i + 1;
+              const active = step === stepNum;
+              const done = step > stepNum;
               return (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: "5px", opacity: active || done ? 1 : 0.25 }}>
-                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: active ? C.accent : done ? C.act1 : C.inkFaint, transition: "all 0.3s" }} />
-                  <span className="r-hide-mobile" style={{ fontSize: "9px", fontFamily: "'Courier Prime', monospace", color: active ? C.accent : C.inkDim, letterSpacing: "1px" }}>{s.toUpperCase()}</span>
-                  {i < visibleSteps.length - 1 && <span className="r-hide-mobile" style={{ color: C.inkFaint, margin: "0 2px" }}>·</span>}
+                <div key={i} style={{ display: "flex", alignItems: "center" }}>
+                  <button onClick={() => done && setStep(stepNum)} style={{
+                    background: "none", border: "none", cursor: done ? "pointer" : "default",
+                    padding: "2px 6px", borderRadius: "4px", fontFamily: F.serif, fontSize: "13px",
+                    color: active ? C.ink : done ? C.inkDim : C.inkFaint,
+                    textDecoration: done ? "underline" : "none",
+                    textDecorationColor: "rgba(0,0,0,0.2)",
+                    whiteSpace: "nowrap",
+                  }}>{s}</button>
+                  {i < visibleSteps.length - 1 && (
+                    <span style={{ color: C.inkFaint, fontSize: "11px" }}>›</span>
+                  )}
                 </div>
               );
             })}
-            <button onClick={() => setLang(l => l === "sv" ? "en" : "sv")} style={{ marginLeft: "14px", background: "none", border: `1px solid ${C.border}`, borderRadius: "3px", color: C.inkDim, cursor: "pointer", fontFamily: "'Courier Prime', monospace", fontSize: "9px", letterSpacing: "1px", padding: "3px 8px" }}>{lang === "sv" ? "EN" : "SV"}</button>
           </div>
         </div>
       )}
 
-      <div className={step === 0 ? "r-pad-start" : "r-pad"} style={{ maxWidth: "700px", margin: "0 auto", padding: step === 0 ? "72px 40px" : "44px 40px" }}>
+      <div className={step === 0 ? "r-pad" : "r-pad"} style={{ maxWidth: "720px", margin: "0 auto", padding: step === 0 ? "60px 40px" : "40px 40px" }}>
 
-        {/* 0: LANGUAGE */}
+        {/* ── 0: LANGUAGE ── */}
         {step === 0 && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
-            <div style={{ textAlign: "center", marginBottom: "48px" }}>
-              <h1 className="r-h1" style={{ margin: "0 0 6px", fontFamily: "'Cormorant Garamond', serif", fontSize: "42px", fontWeight: 600, letterSpacing: "6px", color: C.ink }}>DRAMATURG</h1>
-              <p style={{ margin: 0, fontFamily: "'Courier Prime', monospace", fontSize: "10px", letterSpacing: "3px", color: C.ink, fontWeight: "700" }}>AI STORY STRUCTURE ASSISTANT</p>
+            <div style={{ textAlign: "center", marginBottom: "40px" }}>
+              {/* Logotype */}
+              <div style={{ display: "inline-flex", flexDirection: "column", alignItems: "center", marginBottom: "24px" }}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="56" height="56" style={{ marginBottom: "14px" }}>
+                  <ellipse cx="20" cy="52" rx="10" ry="4.5" fill="#1a1a18" opacity="0.10"/>
+                  <path d="M12 49 Q12 56 20 56 Q28 56 28 49 L27 44 Q23 41 20 41 Q17 41 13 44 Z" fill="#1a1a18"/>
+                  <ellipse cx="20" cy="44" rx="8" ry="3" fill="#3a3a34"/>
+                  <ellipse cx="19" cy="44" rx="3.5" ry="1.2" fill="#555550" opacity="0.5"/>
+                  <line x1="20" y1="44" x2="54" y2="8" stroke="#1a1a18" stroke-width="1.2" stroke-linecap="round"/>
+                  <path d="M54 8 Q47 14 41 20 Q38 17 40 13 Q47 9 54 8Z" fill="#2a2a28" opacity="0.85"/>
+                  <path d="M48 14 Q41 21 35 28 Q32 25 34 21 Q41 16 48 14Z" fill="#3a3a34" opacity="0.8"/>
+                  <path d="M42 20 Q35 28 29 35 Q26 32 28 28 Q35 23 42 20Z" fill="#2a2a28" opacity="0.85"/>
+                  <path d="M36 27 Q29 35 23 42 Q20 39 22 35 Q29 30 36 27Z" fill="#3a3a34" opacity="0.8"/>
+                  <path d="M54 8 Q47 11 40 16 Q38 12 41 9 Q48 6 54 8Z" fill="#6a6a62" opacity="0.6"/>
+                  <path d="M48 14 Q41 18 34 23 Q32 19 35 16 Q42 12 48 14Z" fill="#888880" opacity="0.55"/>
+                  <path d="M42 20 Q35 24 28 30 Q26 26 29 23 Q36 18 42 20Z" fill="#6a6a62" opacity="0.6"/>
+                  <path d="M36 27 Q29 31 22 37 Q20 33 23 30 Q30 25 36 27Z" fill="#888880" opacity="0.55"/>
+                  <path d="M20 44 L17 50 L20 47 L23 50 Z" fill="#1a1a18"/>
+                  <ellipse cx="20" cy="49" rx="1.5" ry="2" fill="#111110"/>
+                </svg>
+                <div style={{ position: "relative", display: "inline-block" }}>
+                  <h1 style={{ margin: 0, fontFamily: "Georgia, serif", fontSize: "38px", fontWeight: "400", color: "#1a1a18", letterSpacing: "0.5px", lineHeight: 1 }}>Dramaturg</h1>
+                  <div style={{ height: "1.5px", background: "#1a1a18", opacity: 0.15, marginTop: "6px" }} />
+                  <p style={{ margin: "6px 0 0", fontFamily: "Georgia, serif", fontSize: "13px", color: "#888880", letterSpacing: "2px", textTransform: "uppercase" }}>
+                    {lang === "sv" ? "Dramaturgiverktyg för berättare" : "Dramaturgy tool for storytellers"}
+                  </p>
+                </div>
+              </div>
+              <p style={{ margin: 0, fontSize: "16px", color: "#555550", fontFamily: "Georgia, serif", maxWidth: "420px", marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }}>
+                {lang === "sv" ? T.sv.beatSheetExplainer : T.en.beatSheetExplainer}
+              </p>
             </div>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 400, fontSize: "24px", margin: "0 0 6px", textAlign: "center", fontStyle: "italic", color: C.ink }}>{lang === "sv" ? "Välj språk" : "Choose language"}</h2>
-            <p style={{ color: C.inkDim, fontSize: "13px", marginBottom: "28px", textAlign: "center" }}>{lang === "sv" ? "Appen och ditt beat sheet genereras på valt språk." : "The app and beat sheet will be generated in the selected language."}</p>
-            <div className="r-lang-row" style={{ display: "flex", gap: "14px", marginBottom: "36px" }}>
-              <LangOption lang="sv" label="Svenska" selected={lang === "sv"} onSelect={setLang} />
-              <LangOption lang="en" label="English" selected={lang === "en"} onSelect={setLang} />
+            <div className="r-lang-row" style={{ display: "flex", gap: "14px" }}>
+              <LangOption lang="sv" label="Svenska" selected={lang === "sv"} onSelect={(l) => { setLang(l); setStep(1); }} />
+              <LangOption lang="en" label="English" selected={lang === "en"} onSelect={(l) => { setLang(l); setStep(1); }} />
             </div>
-            <button onClick={() => setStep(1)} style={{ ...btnPrimary(true), width: "100%", padding: "15px" }}>{lang === "sv" ? "FORTSÄTT →" : "CONTINUE →"}</button>
           </div>
         )}
 
-        {/* 1: MODEL */}
+        {/* ── 1: MODEL ── */}
         {step === 1 && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
-            <h2 className="r-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "34px", margin: "0 0 6px", fontStyle: "italic" }}>{t.modelStep.heading}</h2>
-            <p style={{ color: C.inkDim, fontSize: "13px", marginBottom: "28px" }}>{t.modelStep.sub}</p>
+            <h2 className="r-title" style={{ fontFamily: F.serif, fontWeight: "400", fontSize: "30px", margin: "0 0 24px" }}>{t.modelStep.heading}</h2>
             {models.map(m => <ModelCard key={m.id} model={m} selected={model === m.id} onSelect={setModel} t={t} />)}
-            <div style={{ marginTop: "28px" }}>
-              <button onClick={() => setStep(2)} style={{ ...btnPrimary(true), width: "100%", padding: "15px" }}>{t.modelStep.btn}</button>
+            <div style={{ marginTop: "24px" }}>
+              <button onClick={() => setStep(2)} style={{ ...btnPrimary(true), width: "100%", padding: "16px" }}>{t.modelStep.btn}</button>
             </div>
           </div>
         )}
 
-        {/* 2: IDEA */}
+        {/* ── 2: IDEA ── */}
         {step === 2 && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
-            <h2 className="r-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "34px", margin: "0 0 6px", fontStyle: "italic" }}>{t.ideaStep.heading}</h2>
-            <p style={{ color: C.inkDim, fontSize: "13px", marginBottom: "32px" }}>{t.ideaStep.sub}</p>
+            <h2 className="r-title" style={{ fontFamily: F.serif, fontWeight: "400", fontSize: "30px", margin: "0 0 6px" }}>{t.ideaStep.heading}</h2>
+            <p style={{ color: C.inkDim, fontSize: "16px", marginBottom: "28px", fontFamily: F.serif }}>{t.ideaStep.sub}</p>
             <div style={{ marginBottom: "18px" }}>
               <label style={labelStyle}>{t.ideaStep.loglineLabel}</label>
-              <textarea value={idea.logline} onChange={e => setIdea({ ...idea, logline: e.target.value })} placeholder={t.ideaStep.loglinePlaceholder} rows={3} style={{ ...inputStyle, resize: "vertical" }} />
+              <textarea value={idea.logline} onChange={e => setIdea({ ...idea, logline: e.target.value })}
+                placeholder={t.ideaStep.loglinePlaceholder} rows={3} style={{ ...inputStyle, resize: "vertical" }} />
             </div>
             <div className="r-grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "18px" }}>
               <div>
@@ -867,23 +932,23 @@ Respond ONLY with a JSON object with these keys: ${regenKeys}`;
               </div>
               <SelectField label={t.ideaStep.genreLabel} value={idea.genre} onChange={val => setIdea({ ...idea, genre: val })} options={t.genres} placeholder="—" />
             </div>
-            <div style={{ marginBottom: "32px" }}>
+            <div style={{ marginBottom: "28px" }}>
               <SelectField label={t.ideaStep.toneLabel} value={idea.tone} onChange={val => setIdea({ ...idea, tone: val })} options={t.tones} placeholder="—" />
             </div>
             <div style={{ display: "flex", gap: "10px" }}>
-              <button onClick={() => setStep(1)} style={btnSecondary}>← {lang === "sv" ? "TILLBAKA" : "BACK"}</button>
+              <button onClick={() => setStep(1)} style={btnSecondary}>{lang === "sv" ? "← Tillbaka" : "← Back"}</button>
               <button onClick={() => setStep(3)} disabled={!canProceedIdea} style={{ ...btnPrimary(canProceedIdea), flex: 1 }}>{t.ideaStep.btn}</button>
             </div>
           </div>
         )}
 
-        {/* 3: CHARACTERS */}
+        {/* ── 3: CHARACTERS ── */}
         {step === 3 && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
-            <h2 className="r-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "34px", margin: "0 0 6px", fontStyle: "italic" }}>{t.charStep.heading}</h2>
-            <p style={{ color: C.inkDim, fontSize: "13px", marginBottom: "28px" }}>{t.charStep.sub}</p>
+            <h2 className="r-title" style={{ fontFamily: F.serif, fontWeight: "400", fontSize: "30px", margin: "0 0 6px" }}>{t.charStep.heading}</h2>
+            <p style={{ color: C.inkDim, fontSize: "16px", marginBottom: "24px", fontFamily: F.serif }}>{t.charStep.sub}</p>
             {characters.map((char, i) => <CharacterCard key={i} char={char} index={i} onChange={updateCharacter} onRemove={removeCharacter} t={t} />)}
-            <button onClick={addCharacter} style={{ ...btnSecondary, width: "100%", marginBottom: "28px", borderStyle: "dashed" }}>{t.charStep.addBtn}</button>
+            <button onClick={addCharacter} style={{ ...btnSecondary, width: "100%", marginBottom: "24px", borderStyle: "dashed" }}>{t.charStep.addBtn}</button>
             <div style={{ display: "flex", gap: "10px" }}>
               <button onClick={() => setStep(2)} style={btnSecondary}>{t.charStep.backBtn}</button>
               <button onClick={generateBeats} disabled={!canProceedChars} style={{ ...btnPrimary(canProceedChars), flex: 1 }}>{t.charStep.nextBtn}</button>
@@ -891,44 +956,46 @@ Respond ONLY with a JSON object with these keys: ${regenKeys}`;
           </div>
         )}
 
-        {/* 4: BEAT SHEET */}
+        {/* ── 4: BEAT SHEET ── */}
         {step === 4 && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
-            <div className="r-wrap" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", gap: "12px" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", gap: "12px", flexWrap: "wrap" }}>
               <div>
-                <h2 className="r-title" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 300, fontSize: "34px", margin: "0 0 4px", fontStyle: "italic" }}>{idea.title || t.beatStep.fallbackTitle}</h2>
-                <p style={{ color: C.inkDim, fontSize: "12px", margin: "0 0 2px", fontStyle: "italic" }}>"{idea.logline}"</p>
-                <p style={{ color: C.inkFaint, fontSize: "10px", margin: 0, fontFamily: "'Courier Prime', monospace", letterSpacing: "1px" }}>{modelInfo?.name}</p>
+                <h2 className="r-title" style={{ fontFamily: F.serif, fontWeight: "400", fontSize: "30px", margin: "0 0 4px" }}>{idea.title || t.beatStep.fallbackTitle}</h2>
+                <p style={{ color: C.inkDim, fontSize: "15px", margin: "0 0 2px", fontStyle: "italic", fontFamily: F.serif }}>"{idea.logline}"</p>
+                <p style={{ color: C.inkFaint, fontSize: "13px", margin: 0, fontFamily: F.serif }}>{modelInfo?.name}</p>
               </div>
-              <button onClick={resetAll} style={{ ...btnSecondary, whiteSpace: "nowrap", marginLeft: "16px", fontSize: "10px" }}>{t.beatStep.newBtn}</button>
+              <button onClick={resetAll} style={{ ...btnSecondary, fontSize: "14px", whiteSpace: "nowrap" }}>{t.beatStep.newBtn}</button>
             </div>
 
             <div style={{ height: "1px", background: C.border, margin: "20px 0 28px" }} />
 
             {loading && (
               <div style={{ display: "flex", alignItems: "center", gap: "12px", color: C.inkDim, marginBottom: "28px" }}>
-                <div style={{ width: "16px", height: "16px", border: `1.5px solid ${C.inkFaint}`, borderTopColor: C.accent, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-                <span style={{ fontFamily: "'Courier Prime', monospace", fontSize: "11px", letterSpacing: "1px" }}>{t.beatStep.generating}</span>
+                <div style={{ width: "18px", height: "18px", border: `2px solid ${C.border}`, borderTopColor: C.ink, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                <span style={{ fontSize: "16px", fontFamily: F.serif, fontStyle: "italic" }}>{t.beatStep.generating}</span>
               </div>
             )}
 
-            {error && <div style={{ background: "rgba(192,128,128,0.08)", border: `1px solid rgba(192,128,128,0.2)`, borderRadius: "5px", padding: "12px 14px", color: C.err, fontSize: "13px", marginBottom: "20px" }}>{error}</div>}
+            {error && (
+              <div style={{ background: "#fde8e8", border: "1px solid #f0b8b8", borderRadius: "6px", padding: "14px 16px", color: C.err, fontSize: "15px", marginBottom: "20px", fontFamily: F.serif }}>
+                {error}
+              </div>
+            )}
 
             <div>
               {beatLabels.map((b, i) => (
-                <BeatCard
-                  key={b.id} id={b.id} beat={beats[b.id]} label={b.label} pct={b.pct} color={b.color} index={i}
+                <BeatCard key={b.id} id={b.id} beat={beats[b.id]} label={b.label} pct={b.pct} color={b.color} index={i}
                   placeholder={t.beatStep.generatingBeat} onRegenerate={handleFeedback}
-                  regeneratingFrom={regeneratingFrom} totalBeats={beatLabels.length} t={t} lang={lang}
-                />
+                  regeneratingFrom={regeneratingFrom} totalBeats={beatLabels.length} t={t} lang={lang} />
               ))}
             </div>
 
             {Object.keys(beats).length > 0 && regeneratingFrom === null && (
               <>
                 <ExportBar beats={beats} beatLabels={beatLabels} idea={idea} modelInfo={modelInfo} lang={lang} t={t} />
-                <div style={{ marginTop: "16px", padding: "16px 18px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: "6px" }}>
-                  <p style={{ margin: 0, fontSize: "11px", color: C.inkDim, fontFamily: "'Courier Prime', monospace", letterSpacing: "0.5px" }}>{t.beatStep.tip}</p>
+                <div style={{ marginTop: "16px", padding: "16px 18px", background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px" }}>
+                  <p style={{ margin: 0, fontSize: "14px", color: C.inkDim, fontFamily: F.serif, fontStyle: "italic" }}>{t.beatStep.tip}</p>
                 </div>
               </>
             )}
