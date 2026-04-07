@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 // ─── PALETTE ─────────────────────────────────────────────────────────────────
 const C = {
@@ -285,6 +285,15 @@ const T = {
       error503: "Servern är tillfälligt överbelastad. Vänta en stund och försök igen.",
       error: "Något gick fel. Försök igen.",
       tip: "Tips: Detta beat sheet är ett förslag, inte en tvångströja. Använd det som en karta att avvika ifrån.",
+      loadingTips: [
+        "Alla berättelser har en form — vi hittar din.",
+        "Protagonisten formas av sina hinder.",
+        "Det bästa beatet är det du inte förväntar dig.",
+        "Konflikten är berättelsens motor.",
+        "Vad vill din hjälte egentligen?",
+        "Varje scene måste driva något framåt.",
+        "Det mörka ögonblicket är berättelsens hjärta.",
+      ],
       generatingBeat: "Genererar…",
       feedbackPlaceholder: "Skriv feedback — t.ex. 'för klichéartat' eller 'protagonisten skulle aldrig göra så här'…",
       feedbackBtn: "Fortsätt →",
@@ -354,6 +363,15 @@ const T = {
       error503: "The server is temporarily overloaded. Wait a moment and try again.",
       error: "Something went wrong. Please try again.",
       tip: "Tip: This beat sheet is a suggestion, not a straitjacket. Use it as a map to deviate from.",
+      loadingTips: [
+        "Every story has a shape — we're finding yours.",
+        "The protagonist is defined by their obstacles.",
+        "The best beat is the one you don't expect.",
+        "Conflict is the engine of story.",
+        "What does your hero really want?",
+        "Every scene must move something forward.",
+        "The dark moment is the heart of the story.",
+      ],
       generatingBeat: "Generating…",
       feedbackPlaceholder: "Write feedback — e.g. 'too clichéd' or 'my protagonist would never do this'…",
       feedbackBtn: "Continue →",
@@ -593,6 +611,60 @@ const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerat
           </div>
         )}
       </div>
+    </div>
+  );
+};
+
+
+// ─── LOADING BAR ─────────────────────────────────────────────────────────────
+const LoadingBar = ({ t }) => {
+  const [progress, setProgress] = useState(0);
+  const [tipIndex, setTipIndex] = useState(0);
+  const [fade, setFade] = useState(true);
+  const tips = t.beatStep.loadingTips || [];
+
+  useEffect(() => {
+    // Progress bar — fills to ~85% then slows
+    const interval = setInterval(() => {
+      setProgress(p => {
+        if (p < 70) return p + 1.2;
+        if (p < 85) return p + 0.3;
+        return p;
+      });
+    }, 180);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!tips.length) return;
+    const interval = setInterval(() => {
+      setFade(false);
+      setTimeout(() => {
+        setTipIndex(i => (i + 1) % tips.length);
+        setFade(true);
+      }, 400);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, [tips.length]);
+
+  return (
+    <div style={{ marginBottom: "32px" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "14px" }}>
+        <div style={{ width: "16px", height: "16px", border: "2px solid rgba(0,0,0,0.12)", borderTopColor: "#1a1a18", borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+        <span style={{ fontSize: "15px", fontFamily: "Georgia, serif", color: "#555550", fontStyle: "italic" }}>{t.beatStep.generating}</span>
+      </div>
+      <div style={{ height: "2px", background: "rgba(0,0,0,0.08)", borderRadius: "2px", overflow: "hidden", marginBottom: "16px" }}>
+        <div style={{ height: "100%", width: `${progress}%`, background: "#1a1a18", borderRadius: "2px", transition: "width 0.18s ease" }} />
+      </div>
+      {tips.length > 0 && (
+        <p style={{
+          margin: 0, fontSize: "14px", fontFamily: "Georgia, serif", color: "#888880",
+          fontStyle: "italic", lineHeight: 1.6,
+          opacity: fade ? 1 : 0, transition: "opacity 0.4s ease",
+        }}>
+          {tips[tipIndex]}
+        </p>
+      )}
     </div>
   );
 };
@@ -970,12 +1042,7 @@ export default function App() {
 
             <div style={{ height: "1px", background: C.border, margin: "20px 0 28px" }} />
 
-            {loading && (
-              <div style={{ display: "flex", alignItems: "center", gap: "12px", color: C.inkDim, marginBottom: "28px" }}>
-                <div style={{ width: "18px", height: "18px", border: `2px solid ${C.border}`, borderTopColor: C.ink, borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
-                <span style={{ fontSize: "16px", fontFamily: F.serif, fontStyle: "italic" }}>{t.beatStep.generating}</span>
-              </div>
-            )}
+            {loading && <LoadingBar t={t} />}
 
             {error && (
               <div style={{ background: "#fde8e8", border: "1px solid #f0b8b8", borderRadius: "6px", padding: "14px 16px", color: C.err, fontSize: "15px", marginBottom: "20px", fontFamily: F.serif }}>
