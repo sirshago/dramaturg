@@ -190,54 +190,54 @@ const BEAT_LABELS = {
   },
   hero_journey: {
     sv: [
-      { id: "ordinary_world",      label: "Den vanliga världen",    pct: "1–10%",  color: C.act1  },
-      { id: "call_to_adventure",   label: "Kallelsen",              pct: "10–12%", color: C.act1  },
-      { id: "refusal",             label: "Vägran",                 pct: "12–20%", color: C.act2a },
-      { id: "mentor",              label: "Mötet med mentorn",      pct: "20–25%", color: C.act2a },
-      { id: "crossing_threshold",  label: "Tröskelövergången",      pct: "25%",    color: C.act2a },
-      { id: "tests_allies_enemies",label: "Prövningar & allierade", pct: "30–50%", color: C.act2a },
-      { id: "innermost_cave",      label: "Den innersta grottan",   pct: "50%",    color: C.act2b },
-      { id: "ordeal",              label: "Den stora prövningen",   pct: "55–70%", color: C.act2b },
-      { id: "reward",              label: "Belöningen",             pct: "70–75%", color: C.act2b },
-      { id: "road_back",           label: "Vägen tillbaka",         pct: "75–85%", color: C.act3  },
-      { id: "resurrection",        label: "Återuppståndelsen",      pct: "85–95%", color: C.act3  },
-      { id: "return_with_elixir",  label: "Återkomsten med eliksir",   pct: "95–99%", color: C.act3  },
+      { id: "ordinary_world",      label: "Den vanliga världen",    pct: "",  color: C.act1  },
+      { id: "call_to_adventure",   label: "Kallelsen",              pct: "", color: C.act1  },
+      { id: "refusal",             label: "Vägran",                 pct: "", color: C.act2a },
+      { id: "mentor",              label: "Mötet med mentorn",      pct: "", color: C.act2a },
+      { id: "crossing_threshold",  label: "Tröskelövergången",      pct: "",    color: C.act2a },
+      { id: "tests_allies_enemies",label: "Prövningar & allierade", pct: "", color: C.act2a },
+      { id: "innermost_cave",      label: "Den innersta grottan",   pct: "",    color: C.act2b },
+      { id: "ordeal",              label: "Den stora prövningen",   pct: "", color: C.act2b },
+      { id: "reward",              label: "Belöningen",             pct: "", color: C.act2b },
+      { id: "road_back",           label: "Vägen tillbaka",         pct: "", color: C.act3  },
+      { id: "resurrection",        label: "Återuppståndelsen",      pct: "", color: C.act3  },
+      { id: "return_with_elixir",  label: "Återkomsten med elixir",   pct: "", color: C.act3  },
     ],
     en: [
-      { id: "ordinary_world",      label: "Ordinary World",         pct: "1–10%",  color: C.act1  },
-      { id: "call_to_adventure",   label: "Call to Adventure",      pct: "10–12%", color: C.act1  },
-      { id: "refusal",             label: "Refusal of the Call",    pct: "12–20%", color: C.act2a },
-      { id: "mentor",              label: "Meeting the Mentor",     pct: "20–25%", color: C.act2a },
-      { id: "crossing_threshold",  label: "Crossing the Threshold", pct: "25%",    color: C.act2a },
-      { id: "tests_allies_enemies",label: "Tests, Allies, Enemies", pct: "30–50%", color: C.act2a },
-      { id: "innermost_cave",      label: "The Innermost Cave",     pct: "50%",    color: C.act2b },
-      { id: "ordeal",              label: "The Ordeal",             pct: "55–70%", color: C.act2b },
-      { id: "reward",              label: "The Reward",             pct: "70–75%", color: C.act2b },
-      { id: "road_back",           label: "The Road Back",          pct: "75–85%", color: C.act3  },
-      { id: "resurrection",        label: "The Resurrection",       pct: "85–95%", color: C.act3  },
-      { id: "return_with_elixir",  label: "Return with the Elixir", pct: "95–99%", color: C.act3  },
+      { id: "ordinary_world",      label: "Ordinary World",         pct: "",  color: C.act1  },
+      { id: "call_to_adventure",   label: "Call to Adventure",      pct: "", color: C.act1  },
+      { id: "refusal",             label: "Refusal of the Call",    pct: "", color: C.act2a },
+      { id: "mentor",              label: "Meeting the Mentor",     pct: "", color: C.act2a },
+      { id: "crossing_threshold",  label: "Crossing the Threshold", pct: "",    color: C.act2a },
+      { id: "tests_allies_enemies",label: "Tests, Allies, Enemies", pct: "", color: C.act2a },
+      { id: "innermost_cave",      label: "The Innermost Cave",     pct: "",    color: C.act2b },
+      { id: "ordeal",              label: "The Ordeal",             pct: "", color: C.act2b },
+      { id: "reward",              label: "The Reward",             pct: "", color: C.act2b },
+      { id: "road_back",           label: "The Road Back",          pct: "", color: C.act3  },
+      { id: "resurrection",        label: "The Resurrection",       pct: "", color: C.act3  },
+      { id: "return_with_elixir",  label: "Return with the Elixir", pct: "", color: C.act3  },
     ],
   },
   freytag: {
     sv: [
-      { id: "exposition",        label: "Exposition",               pct: "1–20%",  color: C.act1  },
-      { id: "inciting_incident", label: "Det utlösande ögonblicket",pct: "20%",    color: C.act1  },
-      { id: "rising_action",     label: "Stigande handling",        pct: "20–50%", color: C.act2a },
-      { id: "complication",      label: "Komplikation",             pct: "40–55%", color: C.act2a },
-      { id: "climax",            label: "Klimax",                   pct: "50–60%", color: C.act2b },
-      { id: "falling_action",    label: "Fallande handling",        pct: "60–85%", color: C.act3  },
-      { id: "catastrophe",       label: "Katastrof / Vändning",     pct: "80–90%", color: C.act3  },
-      { id: "resolution",        label: "Upplösning",               pct: "90–99%", color: C.act3  },
+      { id: "exposition",        label: "Exposition",               pct: "",  color: C.act1  },
+      { id: "inciting_incident", label: "Det utlösande ögonblicket",pct: "",    color: C.act1  },
+      { id: "rising_action",     label: "Stigande handling",        pct: "", color: C.act2a },
+      { id: "complication",      label: "Komplikation",             pct: "", color: C.act2a },
+      { id: "climax",            label: "Klimax",                   pct: "", color: C.act2b },
+      { id: "falling_action",    label: "Fallande handling",        pct: "", color: C.act3  },
+      { id: "catastrophe",       label: "Katastrof / Vändning",     pct: "", color: C.act3  },
+      { id: "resolution",        label: "Upplösning",               pct: "", color: C.act3  },
     ],
     en: [
-      { id: "exposition",        label: "Exposition",               pct: "1–20%",  color: C.act1  },
-      { id: "inciting_incident", label: "Inciting Incident",        pct: "20%",    color: C.act1  },
-      { id: "rising_action",     label: "Rising Action",            pct: "20–50%", color: C.act2a },
-      { id: "complication",      label: "Complication",             pct: "40–55%", color: C.act2a },
-      { id: "climax",            label: "Climax",                   pct: "50–60%", color: C.act2b },
-      { id: "falling_action",    label: "Falling Action",           pct: "60–85%", color: C.act3  },
-      { id: "catastrophe",       label: "Catastrophe / Turn",       pct: "80–90%", color: C.act3  },
-      { id: "resolution",        label: "Resolution",               pct: "90–99%", color: C.act3  },
+      { id: "exposition",        label: "Exposition",               pct: "",  color: C.act1  },
+      { id: "inciting_incident", label: "Inciting Incident",        pct: "",    color: C.act1  },
+      { id: "rising_action",     label: "Rising Action",            pct: "", color: C.act2a },
+      { id: "complication",      label: "Complication",             pct: "", color: C.act2a },
+      { id: "climax",            label: "Climax",                   pct: "", color: C.act2b },
+      { id: "falling_action",    label: "Falling Action",           pct: "", color: C.act3  },
+      { id: "catastrophe",       label: "Catastrophe / Turn",       pct: "", color: C.act3  },
+      { id: "resolution",        label: "Resolution",               pct: "", color: C.act3  },
     ],
   },
 };
@@ -870,10 +870,12 @@ export default function App() {
     try { ["lang","model","step","idea","characters"].forEach(k => localStorage.removeItem("dramaturg_" + k)); } catch {}
   };
 
-  const buildPrompt = (extraInstruction = null, fromIndex = null) => {
+  const buildPrompt = (extraInstruction = null, fromIndex = null, modelOverride = null) => {
     const charText = characters.filter(c => c.name).map(c => `${c.name} (${c.role}): ${c.description}`).join("\n");
-    const allKeys = beatLabels.map(b => b.id);
-    const modelName = modelInfo?.name || model;
+    const activeModelId = modelOverride || model;
+    const activeModelLabels = BEAT_LABELS[activeModelId]?.[lang] || beatLabels;
+    const allKeys = activeModelLabels.map(b => b.id);
+    const modelName = MODELS[lang].find(m => m.id === activeModelId)?.name || activeModelId;
     if (fromIndex !== null && extraInstruction) {
       const confirmedBeats = beatLabels.slice(0, fromIndex).map(b => `${b.id}: "${beats[b.id] || ""}"`).join("\n");
       const regenKeys = beatLabels.slice(fromIndex).map(b => b.id).join(", ");
@@ -899,9 +901,10 @@ export default function App() {
     else setBeats(parsed);
   };
 
-  const generateBeats = async () => {
+  const generateBeats = async (modelOverride = null) => {
+    const activeModel = modelOverride || model;
     setLoading(true); setError(""); setBeats({}); setRegeneratingFrom(null); setStep(4);
-    try { await callAPI(buildPrompt()); }
+    try { await callAPI(buildPrompt(null, null, activeModel)); }
     catch(e) { setError(e.message === "overloaded" ? t.beatStep.error503 : t.beatStep.error); }
     finally { setLoading(false); }
   };
@@ -1150,7 +1153,7 @@ export default function App() {
                             if (isCurrent) return;
                             if (window.confirm(t.beatStep.switchModelConfirm)) {
                               setModel(m.id);
-                              generateBeats();
+                              generateBeats(m.id);
                             }
                           }}
                           style={{
