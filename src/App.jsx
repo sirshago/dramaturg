@@ -286,13 +286,12 @@ const T = {
       error: "Något gick fel. Försök igen.",
       tip: "Tips: Detta beat sheet är ett förslag, inte en tvångströja. Använd det som en karta att avvika ifrån.",
       loadingTips: [
-        "Alla berättelser har en form — vi hittar din.",
-        "Protagonisten formas av sina hinder.",
-        "Det bästa beatet är det du inte förväntar dig.",
-        "Konflikten är berättelsens motor.",
-        "Vad vill din hjälte egentligen?",
-        "Varje scene måste driva något framåt.",
-        "Det mörka ögonblicket är berättelsens hjärta.",
+        "Läser igenom din berättelse…",
+        "Hittar de dramaturgiska vändpunkterna…",
+        "Analyserar karaktärernas drivkrafter…",
+        "Bygger strukturen beat för beat…",
+        "Kontrollerar att berättelsebågen håller…",
+        "Lägger sista handen på strukturen…",
       ],
       generatingBeat: "Genererar…",
       feedbackPlaceholder: "Skriv feedback — t.ex. 'för klichéartat' eller 'protagonisten skulle aldrig göra så här'…",
@@ -300,6 +299,11 @@ const T = {
       regenerating: "Regenererar…",
       whatIsThis: "Vad är detta?",
       giveFeedback: "Ge feedback",
+      editBeat: "Redigera",
+      saveBeat: "Spara",
+      retryBtn: "Försök igen",
+      switchModel: "Byt modell",
+      switchModelLabel: "Prova med en annan modell:",
       cancel: "Avbryt",
       scopeQuestion: "Hur mycket ska regenereras?",
       scopeOnly: "Bara detta beat",
@@ -364,13 +368,12 @@ const T = {
       error: "Something went wrong. Please try again.",
       tip: "Tip: This beat sheet is a suggestion, not a straitjacket. Use it as a map to deviate from.",
       loadingTips: [
-        "Every story has a shape — we're finding yours.",
-        "The protagonist is defined by their obstacles.",
-        "The best beat is the one you don't expect.",
-        "Conflict is the engine of story.",
-        "What does your hero really want?",
-        "Every scene must move something forward.",
-        "The dark moment is the heart of the story.",
+        "Reading through your story…",
+        "Identifying the dramatic turning points…",
+        "Analysing your characters' motivations…",
+        "Building the structure beat by beat…",
+        "Checking that the story arc holds…",
+        "Putting the finishing touches on the structure…",
       ],
       generatingBeat: "Generating…",
       feedbackPlaceholder: "Write feedback — e.g. 'too clichéd' or 'my protagonist would never do this'…",
@@ -378,6 +381,11 @@ const T = {
       regenerating: "Regenerating…",
       whatIsThis: "What is this?",
       giveFeedback: "Give feedback",
+      editBeat: "Edit",
+      saveBeat: "Save",
+      retryBtn: "Try again",
+      switchModel: "Switch model",
+      switchModelLabel: "Try with a different model:",
       cancel: "Cancel",
       scopeQuestion: "How much should be regenerated?",
       scopeOnly: "This beat only",
@@ -513,11 +521,13 @@ const CharacterCard = ({ char, index, onChange, onRemove, t }) => {
 };
 
 // ─── BEAT CARD ────────────────────────────────────────────────────────────────
-const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerate, regeneratingFrom, totalBeats, t, lang }) => {
+const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerate, onEdit, regeneratingFrom, totalBeats, t, lang }) => {
   const [showExplanation, setShowExplanation] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
   const [feedback, setFeedback] = useState("");
   const [showScope, setShowScope] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editText, setEditText] = useState("");
   const explanation = BEAT_EXPLANATIONS[lang]?.[id];
   const isRegenerating = regeneratingFrom !== null && index >= regeneratingFrom;
   const isFirst = regeneratingFrom !== null && index === regeneratingFrom;
@@ -551,15 +561,21 @@ const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerat
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
             <span style={{ fontSize: "12px", color: C.inkFaint, fontFamily: F.serif }}>{pct}</span>
-            {beat && !isRegenerating && !showScope && (
-              <button onClick={() => showFeedback ? cancelFeedback() : setShowFeedback(true)} style={{
-                background: showFeedback ? C.surface : "none",
-                border: `1px solid ${showFeedback ? C.border : C.border}`,
-                borderRadius: "4px", cursor: "pointer", color: C.inkDim,
-                fontFamily: F.serif, fontSize: "13px", padding: "3px 10px", transition: "all 0.15s",
-              }}>
-                {showFeedback ? t.beatStep.cancel : t.beatStep.giveFeedback}
-              </button>
+            {beat && !isRegenerating && !showScope && !isEditing && (
+              <div style={{ display: "flex", gap: "6px" }}>
+                <button onClick={() => { setEditText(beat); setIsEditing(true); setShowFeedback(false); }} style={{
+                  background: "none", border: `1px solid ${C.border}`, borderRadius: "4px",
+                  cursor: "pointer", color: C.inkDim, fontFamily: F.serif, fontSize: "13px", padding: "3px 10px",
+                }}>{t.beatStep.editBeat}</button>
+                <button onClick={() => showFeedback ? cancelFeedback() : setShowFeedback(true)} style={{
+                  background: showFeedback ? C.surface : "none",
+                  border: `1px solid ${C.border}`,
+                  borderRadius: "4px", cursor: "pointer", color: C.inkDim,
+                  fontFamily: F.serif, fontSize: "13px", padding: "3px 10px", transition: "all 0.15s",
+                }}>
+                  {showFeedback ? t.beatStep.cancel : t.beatStep.giveFeedback}
+                </button>
+              </div>
             )}
           </div>
         </div>
@@ -570,7 +586,16 @@ const BeatCard = ({ beat, label, pct, color, index, id, placeholder, onRegenerat
           </div>
         )}
 
-        {isRegenerating && !beat
+        {isEditing ? (
+          <div style={{ marginTop: "4px" }}>
+            <textarea value={editText} onChange={e => setEditText(e.target.value)} rows={3}
+              style={{ ...{width:"100%",background:"#fff",border:`1px solid ${C.border}`,borderRadius:"6px",padding:"12px 14px",color:C.ink,fontSize:"16px",fontFamily:"Georgia,serif",outline:"none",boxSizing:"border-box",transition:"border-color 0.2s"},resize:"vertical",marginBottom:"8px" }} autoFocus />
+            <div style={{ display: "flex", gap: "8px" }}>
+              <button onClick={() => { onEdit(id, editText); setIsEditing(false); }} style={{ background:C.ink,border:"none",color:"#fff",borderRadius:"5px",padding:"8px 16px",cursor:"pointer",fontFamily:"Georgia,serif",fontSize:"14px" }}>{t.beatStep.saveBeat}</button>
+              <button onClick={() => setIsEditing(false)} style={{ background:"none",border:`1px solid ${C.border}`,color:C.inkDim,borderRadius:"5px",padding:"8px 14px",cursor:"pointer",fontFamily:"Georgia,serif",fontSize:"14px" }}>{t.beatStep.cancel}</button>
+            </div>
+          </div>
+        ) : isRegenerating && !beat
           ? <p style={{ margin: 0, color: C.inkFaint, fontSize: "15px", fontFamily: F.serif, fontStyle: "italic" }}>{isFirst ? t.beatStep.regenerating : "…"}</p>
           : <p style={{ margin: 0, color: C.ink, fontSize: "16px", lineHeight: 1.7, fontFamily: F.serif }}>{beat || placeholder}</p>
         }
@@ -738,6 +763,38 @@ const ExportBar = ({ beats, beatLabels, idea, modelInfo, lang, t }) => {
     } catch(e) { console.error(e); } finally { setExporting(null); }
   };
 
+  const exportTXT = () => {
+    const lines = [];
+    lines.push(idea.title || "Beat Sheet");
+    if (idea.logline) lines.push(`"${idea.logline}"`);
+    if (modelInfo?.name) lines.push(modelInfo.name);
+    lines.push("");
+    beatLabels.forEach(b => {
+      const beatText = beats[b.id]; if (!beatText) return;
+      lines.push(b.label.toUpperCase()); lines.push(beatText); lines.push("");
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `${filename}.txt`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const exportMD = () => {
+    const lines = [];
+    lines.push(`# ${idea.title || "Beat Sheet"}`);
+    if (idea.logline) lines.push(`*"${idea.logline}"*`);
+    if (modelInfo?.name) lines.push(`*${modelInfo.name}*`);
+    lines.push("");
+    beatLabels.forEach(b => {
+      const beatText = beats[b.id]; if (!beatText) return;
+      lines.push(`## ${b.label}`); lines.push(beatText); lines.push("");
+    });
+    const blob = new Blob([lines.join("\n")], { type: "text/markdown;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a"); a.href = url; a.download = `${filename}.md`; a.click();
+    URL.revokeObjectURL(url);
+  };
+
   const eb = (onClick, label, loading) => (
     <button onClick={onClick} disabled={!!exporting} style={{
       background: "#fff", border: `1px solid ${C.border}`, color: exporting ? C.inkFaint : C.inkDim,
@@ -755,6 +812,8 @@ const ExportBar = ({ beats, beatLabels, idea, modelInfo, lang, t }) => {
       </span>
       {eb(exportPDF, exporting === "pdf" ? (lang === "sv" ? "Skapar PDF…" : "Creating PDF…") : "↓ PDF", exporting === "pdf")}
       {eb(exportDOCX, exporting === "docx" ? (lang === "sv" ? "Skapar Word…" : "Creating Word…") : "↓ Word (.docx)", exporting === "docx")}
+      {eb(exportTXT, "↓ TXT", false)}
+      {eb(exportMD, "↓ Markdown", false)}
     </div>
   );
 };
@@ -774,15 +833,24 @@ const LangOption = ({ lang, label, selected, onSelect }) => (
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
 export default function App() {
-  const [lang, setLang] = useState("sv");
-  const [model, setModel] = useState("save_the_cat");
-  const [step, setStep] = useState(0); // 0=lang, 1=model, 2=idea, 3=chars, 4=beats
-  const [idea, setIdea] = useState({ title: "", logline: "", genre: "", tone: "" });
-  const [characters, setCharacters] = useState([{ name: "", role: "", description: "" }]);
+  const getSaved = (key, fallback) => { try { const v = localStorage.getItem("dramaturg_" + key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } };
+  const save = (key, val) => { try { localStorage.setItem("dramaturg_" + key, JSON.stringify(val)); } catch {} };
+
+  const [lang, setLangState] = useState(() => getSaved("lang", "sv"));
+  const [model, setModelState] = useState(() => getSaved("model", "save_the_cat"));
+  const [step, setStepState] = useState(() => { const s = getSaved("step", 0); return s === 4 ? 3 : s; }); // don't restore beat sheet step
+  const [idea, setIdeaState] = useState(() => getSaved("idea", { title: "", logline: "", genre: "", tone: "" }));
+  const [characters, setCharactersState] = useState(() => getSaved("characters", [{ name: "", role: "", description: "" }]));
   const [beats, setBeats] = useState({});
   const [loading, setLoading] = useState(false);
   const [regeneratingFrom, setRegeneratingFrom] = useState(null);
   const [error, setError] = useState("");
+
+  const setStep = (v) => { setStepState(v); if (v !== 4) save("step", v); };
+  const setLang = (v) => { setLangState(v); save("lang", v); };
+  const setModel = (v) => { setModelState(v); save("model", v); };
+  const setIdea = (v) => { setIdeaState(v); save("idea", v); };
+  const setCharacters = (v) => { setCharactersState(v); save("characters", v); };
 
   const t = T[lang];
   const models = MODELS[lang];
@@ -793,9 +861,11 @@ export default function App() {
   const removeCharacter = (i) => setCharacters(characters.filter((_, idx) => idx !== i));
   const updateCharacter = (i, field, val) => { const u = [...characters]; u[i] = { ...u[i], [field]: val }; setCharacters(u); };
   const resetAll = () => {
-    setStep(0); setBeats({}); setError(""); setModel("save_the_cat"); setRegeneratingFrom(null);
+    setStep(0); setBeats({}); setError(""); setRegeneratingFrom(null);
+    setModel("save_the_cat");
     setIdea({ title: "", logline: "", genre: "", tone: "" });
     setCharacters([{ name: "", role: "", description: "" }]);
+    try { ["lang","model","step","idea","characters"].forEach(k => localStorage.removeItem("dramaturg_" + k)); } catch {}
   };
 
   const buildPrompt = (extraInstruction = null, fromIndex = null) => {
@@ -1034,10 +1104,9 @@ export default function App() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "8px", gap: "12px", flexWrap: "wrap" }}>
               <div>
                 <h2 className="r-title" style={{ fontFamily: F.serif, fontWeight: "400", fontSize: "30px", margin: "0 0 4px" }}>{idea.title || t.beatStep.fallbackTitle}</h2>
-                <p style={{ color: C.inkDim, fontSize: "15px", margin: "0 0 2px", fontStyle: "italic", fontFamily: F.serif }}>"{idea.logline}"</p>
+                {idea.logline && <p style={{ color: C.inkDim, fontSize: "15px", margin: "0 0 2px", fontStyle: "italic", fontFamily: F.serif }}>"{idea.logline}"</p>}
                 <p style={{ color: C.inkFaint, fontSize: "13px", margin: 0, fontFamily: F.serif }}>{modelInfo?.name}</p>
               </div>
-              <button onClick={resetAll} style={{ ...btnSecondary, fontSize: "14px", whiteSpace: "nowrap" }}>{t.beatStep.newBtn}</button>
             </div>
 
             <div style={{ height: "1px", background: C.border, margin: "20px 0 28px" }} />
@@ -1045,8 +1114,9 @@ export default function App() {
             {loading && <LoadingBar t={t} />}
 
             {error && (
-              <div style={{ background: "#fde8e8", border: "1px solid #f0b8b8", borderRadius: "6px", padding: "14px 16px", color: C.err, fontSize: "15px", marginBottom: "20px", fontFamily: F.serif }}>
-                {error}
+              <div style={{ background: "#fde8e8", border: "1px solid #f0b8b8", borderRadius: "6px", padding: "14px 16px", marginBottom: "20px", fontFamily: F.serif }}>
+                <p style={{ margin: "0 0 12px", color: C.err, fontSize: "15px" }}>{error}</p>
+                <button onClick={generateBeats} style={{ ...btnPrimary(true), padding: "10px 20px", fontSize: "14px" }}>{t.beatStep.retryBtn}</button>
               </div>
             )}
 
@@ -1054,6 +1124,7 @@ export default function App() {
               {beatLabels.map((b, i) => (
                 <BeatCard key={b.id} id={b.id} beat={beats[b.id]} label={b.label} pct={b.pct} color={b.color} index={i}
                   placeholder={t.beatStep.generatingBeat} onRegenerate={handleFeedback}
+                  onEdit={(id, text) => setBeats(prev => ({...prev, [id]: text}))}
                   regeneratingFrom={regeneratingFrom} totalBeats={beatLabels.length} t={t} lang={lang} />
               ))}
             </div>
@@ -1063,6 +1134,26 @@ export default function App() {
                 <ExportBar beats={beats} beatLabels={beatLabels} idea={idea} modelInfo={modelInfo} lang={lang} t={t} />
                 <div style={{ marginTop: "16px", padding: "16px 18px", background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px" }}>
                   <p style={{ margin: 0, fontSize: "14px", color: C.inkDim, fontFamily: F.serif, fontStyle: "italic" }}>{t.beatStep.tip}</p>
+                </div>
+                {/* Model switcher */}
+                <div style={{ marginTop: "24px", padding: "16px 18px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: "6px" }}>
+                  <p style={{ margin: "0 0 12px", fontSize: "14px", color: C.inkDim, fontFamily: F.serif }}>{t.beatStep.switchModelLabel}</p>
+                  <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                    {MODELS[lang].map(m => (
+                      <button key={m.id} onClick={() => { setModel(m.id); generateBeats(); }}
+                        style={{
+                          background: m.id === model ? C.ink : "#fff",
+                          border: `1px solid ${m.id === model ? C.ink : C.border}`,
+                          color: m.id === model ? "#fff" : C.inkDim,
+                          borderRadius: "5px", padding: "8px 14px", cursor: "pointer",
+                          fontFamily: F.serif, fontSize: "14px", transition: "all 0.15s",
+                        }}>{m.name}</button>
+                    ))}
+                  </div>
+                </div>
+                {/* New story button at bottom */}
+                <div style={{ marginTop: "32px", paddingTop: "24px", borderTop: `1px solid ${C.border}` }}>
+                  <button onClick={resetAll} style={{ ...btnSecondary, width: "100%" }}>{t.beatStep.newBtn}</button>
                 </div>
               </>
             )}
