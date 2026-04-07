@@ -45,7 +45,7 @@ const BEAT_EXPLANATIONS = {
     reward:            "Hjälten överlever och belönas — ett svärd, en insikt, ett erkännande. Men faran är inte över. Belöningen är ett resultat av ordeal, inte en slutpunkt.",
     road_back:         "Hjälten vänder mot hemvärlden men jagades fortfarande av konsekvenserna av sina handlingar. Den yttre faran är inte borta — och insikterna måste nu integreras.",
     resurrection:      "Den sista, avgörande prövningen. Hjälten måste visa att hen verkligen har förändrats — gamla vanor, gamla rädslor prövas en sista gång. Endast den förnyade hjälten kan segra.",
-    return_with_elixir:"Hjälten återvänder till den vanliga världen med ett 'eliksir' — ett fysiskt föremål, en insikt, kärlek — som kan hela hemvärlden. Resan har förändrat både hjälten och världen.",
+    return_with_elixir:"Hjälten återvänder till den vanliga världen med ett 'elixir' — ett fysiskt föremål, en insikt, kärlek — som kan hela hemvärlden. Resan har förändrat både hjälten och världen.",
     exposition:        "Grundförutsättningarna läggs ut: tid, plats, karaktärer och den konfliktkimande situationen. Exposition är bakgrundsmusiken — den ska vara knappt märkbar men avgörande.",
     inciting_incident: "Den händelse som sätter berättelsens konflikt i rörelse. Det är störningen av status quo, gnistan som antänder handlingens långa led.",
     rising_action:     "En serie händelser som bygger spänning och komplexitet. Protagonist och antagonist möts, stakes höjs successivt, karaktärerna avslöjas under press.",
@@ -201,7 +201,7 @@ const BEAT_LABELS = {
       { id: "reward",              label: "Belöningen",             pct: "70–75%", color: C.act2b },
       { id: "road_back",           label: "Vägen tillbaka",         pct: "75–85%", color: C.act3  },
       { id: "resurrection",        label: "Återuppståndelsen",      pct: "85–95%", color: C.act3  },
-      { id: "return_with_elixir",  label: "Eliksirens återkomst",   pct: "95–99%", color: C.act3  },
+      { id: "return_with_elixir",  label: "Återkomsten med eliksir",   pct: "95–99%", color: C.act3  },
     ],
     en: [
       { id: "ordinary_world",      label: "Ordinary World",         pct: "1–10%",  color: C.act1  },
@@ -246,7 +246,7 @@ const BEAT_LABELS = {
 const T = {
   sv: {
     appSubtitle: "Dramaturgiverktyg för berättare",
-    steps: ["Modell", "Idé", "Karaktärer", "Beat Sheet"],
+    steps: ["Modell", "Idé", "Karaktärer", "Struktur"],
     beatSheetExplainer: "Beskriv din berättelseidé och dina karaktärer. Appen genererar en komplett dramaturgistruktur anpassad till din historia.",
     modelStep: {
       heading: "Välj dramaturgimodell",
@@ -304,6 +304,7 @@ const T = {
       retryBtn: "Försök igen",
       switchModel: "Byt modell",
       switchModelLabel: "Prova med en annan modell:",
+      switchModelConfirm: "Ditt nuvarande förslag försvinner. Vill du byta modell?",
       cancel: "Avbryt",
       scopeQuestion: "Hur mycket ska regenereras?",
       scopeOnly: "Bara detta beat",
@@ -328,7 +329,7 @@ const T = {
   },
   en: {
     appSubtitle: "Dramaturgy tool for storytellers",
-    steps: ["Model", "Idea", "Characters", "Beat Sheet"],
+    steps: ["Model", "Idea", "Characters", "Structure"],
     beatSheetExplainer: "Describe your story idea and characters. The app generates a complete dramatic structure tailored to your story.",
     modelStep: {
       heading: "Choose your story model",
@@ -386,6 +387,7 @@ const T = {
       retryBtn: "Try again",
       switchModel: "Switch model",
       switchModelLabel: "Try with a different model:",
+      switchModelConfirm: "Your current suggestion will be lost. Switch model?",
       cancel: "Cancel",
       scopeQuestion: "How much should be regenerated?",
       scopeOnly: "This beat only",
@@ -1139,16 +1141,29 @@ export default function App() {
                 <div style={{ marginTop: "24px", padding: "16px 18px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: "6px" }}>
                   <p style={{ margin: "0 0 12px", fontSize: "14px", color: C.inkDim, fontFamily: F.serif }}>{t.beatStep.switchModelLabel}</p>
                   <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                    {MODELS[lang].map(m => (
-                      <button key={m.id} onClick={() => { setModel(m.id); generateBeats(); }}
-                        style={{
-                          background: m.id === model ? C.ink : "#fff",
-                          border: `1px solid ${m.id === model ? C.ink : C.border}`,
-                          color: m.id === model ? "#fff" : C.inkDim,
-                          borderRadius: "5px", padding: "8px 14px", cursor: "pointer",
-                          fontFamily: F.serif, fontSize: "14px", transition: "all 0.15s",
-                        }}>{m.name}</button>
-                    ))}
+                    {MODELS[lang].map(m => {
+                      const isCurrent = m.id === model;
+                      return (
+                        <button key={m.id}
+                          disabled={isCurrent}
+                          onClick={() => {
+                            if (isCurrent) return;
+                            if (window.confirm(t.beatStep.switchModelConfirm)) {
+                              setModel(m.id);
+                              generateBeats();
+                            }
+                          }}
+                          style={{
+                            background: isCurrent ? C.ink : "#fff",
+                            border: `1px solid ${isCurrent ? C.ink : C.border}`,
+                            color: isCurrent ? "#fff" : C.inkDim,
+                            borderRadius: "5px", padding: "8px 14px",
+                            cursor: isCurrent ? "default" : "pointer",
+                            fontFamily: F.serif, fontSize: "14px", transition: "all 0.15s",
+                            opacity: isCurrent ? 0.7 : 1,
+                          }}>{m.name}</button>
+                      );
+                    })}
                   </div>
                 </div>
                 {/* New story button at bottom */}
