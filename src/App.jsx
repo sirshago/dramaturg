@@ -834,13 +834,14 @@ const LangOption = ({ lang, label, selected, onSelect }) => (
 );
 
 // ─── MAIN APP ─────────────────────────────────────────────────────────────────
-export default function App() {
+export default function App({ initialLang } = {}) {
   const getSaved = (key, fallback) => { try { const v = localStorage.getItem("dramaturg_" + key); return v ? JSON.parse(v) : fallback; } catch { return fallback; } };
+  const initLang = initialLang || getSaved("lang", "sv");
   const save = (key, val) => { try { localStorage.setItem("dramaturg_" + key, JSON.stringify(val)); } catch {} };
 
-  const [lang, setLangState] = useState(() => getSaved("lang", "sv"));
+  const [lang, setLangState] = useState(() => initLang);
   const [model, setModelState] = useState(() => getSaved("model", "save_the_cat"));
-  const [step, setStepState] = useState(() => { const s = getSaved("step", 0); return s === 4 ? 3 : s; }); // don't restore beat sheet step
+  const [step, setStepState] = useState(() => { const s = getSaved("step", initialLang ? 1 : 0); return s === 4 ? 3 : s; }); // skip lang step if coming from landing
   const [idea, setIdeaState] = useState(() => getSaved("idea", { title: "", logline: "", genre: "", tone: "" }));
   const [characters, setCharactersState] = useState(() => getSaved("characters", [{ name: "", role: "", description: "" }]));
   const [beats, setBeats] = useState({});
@@ -1040,9 +1041,6 @@ export default function App() {
                   </p>
                 </div>
               </div>
-              <p style={{ margin: 0, fontSize: "16px", color: "#555550", fontFamily: "Georgia, serif", maxWidth: "420px", marginLeft: "auto", marginRight: "auto", lineHeight: 1.7 }}>
-                {lang === "sv" ? T.sv.beatSheetExplainer : T.en.beatSheetExplainer}
-              </p>
             </div>
             <div className="r-lang-row" style={{ display: "flex", gap: "14px" }}>
               <LangOption lang="sv" label="Svenska" selected={lang === "sv"} onSelect={(l) => { setLang(l); setStep(1); }} />
