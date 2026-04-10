@@ -148,6 +148,58 @@ const MODELS = {
       examples: "Ibsen's plays, Shakespeare's tragedies and many classical dramas follow this model.",
     },
   ],
+  no: [
+    {
+      id: "save_the_cat", name: "Save the Cat", author: "Blake Snyder",
+      tagline: "15 eksakte beats, manuspresisjons-tilpasset",
+      best: "Spenning, thriller, komedie — historier med tydelig ytre konflikt og tempo.",
+      worst: "Litterær prosa, ikke-lineære historier, karakterstudier uten tydelig ytre handling.",
+      desc: "Hvert beat har en prosentvis posisjon i manuset, noe som gir en tydelig struktur å følge — eller bevisst bryte mot.",
+      examples: "Brukt i filmer som Parasite, Bridesmaids og The Dark Knight.",
+    },
+    {
+      id: "hero_journey", name: "Heltereisen", author: "Joseph Campbell / Christopher Vogler",
+      tagline: "12 arketypiske trinn, fokus på indre forandring",
+      best: "Fantasy, epos, coming-of-age — historier om transformasjon og kall.",
+      worst: "Ensembledrama, historier uten tydelig sentral helt, minimalistisk realisme.",
+      desc: "Campbells urgamle struktur, bearbeidet for film av Vogler. Like fokusert på den indre forandringen som den ytre handlingen.",
+      examples: "Harry Potter, Frodo i Ringenes Herre og Neo i The Matrix følger alle heltereisen.",
+    },
+    {
+      id: "freytag", name: "Freytags Pyramide", author: "Gustav Freytag",
+      tagline: "5 akter, klassisk dramatikk",
+      best: "Teaterstykker, drama, tragedie — historier som undersøker konsekvenser av valg.",
+      worst: "Rask action, komedier, historier med mange sidefortellinger.",
+      desc: "Utviklet for analyse av drama og tragedie. Strukturen er enkel: eksposisjon, stigende handling, klimaks, fallende handling, oppløsning — noe som gir stort tolkningsrom.",
+      examples: "Ibsens stykker, Shakespeares tragedier og mange klassiske dramaer følger denne modellen.",
+    },
+  ],
+  da: [
+    {
+      id: "save_the_cat", name: "Save the Cat", author: "Blake Snyder",
+      tagline: "15 præcise beats, manuskripttilpasset",
+      best: "Spænding, thriller, komedie — historier med tydelig ydre konflikt og tempo.",
+      worst: "Litterær prosa, ikke-lineære fortællinger, karakterstudier uden tydelig ydre handling.",
+      desc: "Hvert beat har en procentuel position i manuskriptet, hvilket giver en tydelig struktur at følge — eller bevidst bryde.",
+      examples: "Brugt i film som Parasite, Bridesmaids og The Dark Knight.",
+    },
+    {
+      id: "hero_journey", name: "Helterejsen", author: "Joseph Campbell / Christopher Vogler",
+      tagline: "12 arketypiske trin, fokus på indre forandring",
+      best: "Fantasy, epos, coming-of-age — historier om transformation og kald.",
+      worst: "Ensembledrama, historier uden tydelig central helt, minimalistisk realisme.",
+      desc: "Campbells ældgamle struktur, bearbejdet til film af Vogler. Lige så fokuseret på den indre forandring som den ydre handling.",
+      examples: "Harry Potter, Frodo i Ringenes Herre og Neo i The Matrix følger alle helterejsen.",
+    },
+    {
+      id: "freytag", name: "Freytags Pyramide", author: "Gustav Freytag",
+      tagline: "5 akter, klassisk dramatik",
+      best: "Teaterstykker, drama, tragedie — historier der undersøger konsekvenser af valg.",
+      worst: "Hurtig action, komedier, historier med mange sidehandlinger.",
+      desc: "Udviklet til analyse af drama og tragedie. Strukturen er enkel: eksposition, stigende handling, klimaks, faldende handling, opløsning — med stort fortolkningsrum.",
+      examples: "Ibsens stykker, Shakespeares tragedier og mange klassiske dramaer følger denne model.",
+    },
+  ],
 };
 
 // ─── BEAT LABELS ─────────────────────────────────────────────────────────────
@@ -408,6 +460,172 @@ const T = {
       { label: "Herald",             desc: "Delivers the call to adventure or crucial information that sets the story in motion." },
       { label: "Threshold Guardian", desc: "Tests the protagonist at key thresholds. Can be a trial rather than an enemy." },
       { label: "Shadow",             desc: "Represents the protagonist's dark side or what they fear becoming — a mirror, not always an enemy." },
+    ],
+  },
+  no: {
+    appSubtitle: "Dramaturgiverktøy for fortellere",
+    steps: ["Modell", "Idé", "Karakterer", "Struktur"],
+    beatSheetExplainer: "Beskriv idéen din og karakterene dine. Appen genererer en komplett dramaturgisk struktur tilpasset akkurat din historie.",
+    modelStep: {
+      heading: "Velg dramaturgimodell",
+      bestLabel: "Passer best for",
+      worstLabel: "Mindre egnet for",
+      examplesLabel: "Eksempler",
+      btn: "Neste: Historiens idé →",
+    },
+    ideaStep: {
+      heading: "Din historiesidé",
+      sub: "Start med kjernen — hva handler historien om?",
+      loglineLabel: "Logline",
+      loglinePlaceholder: "En setning som fanger essensen: hvem er protagonisten, hva vil hen, og hva er hinderet?",
+      titleLabel: "Tittel (valgfri)",
+      titlePlaceholder: "Arbeidstittel",
+      genreLabel: "Sjanger",
+      toneLabel: "Tone & stemning",
+      btn: "Neste: Karakterer →",
+    },
+    charStep: {
+      heading: "Karakterer",
+      sub: "Legg til de viktigste karakterene dine. Minst én kreves.",
+      nameLabel: "Navn",
+      namePlaceholder: "Karakterens navn",
+      roleLabel: "Rolle",
+      descLabel: "Bakgrunn & motivasjon",
+      descPlaceholder: "Hva vil karakteren? Hva hindrer hen?",
+      addBtn: "+ Legg til karakter",
+      backBtn: "← Tilbake",
+      nextBtn: "Generer struktur →",
+    },
+    beatStep: {
+      fallbackTitle: "Struktur",
+      newBtn: "Ny historie",
+      generating: "Bygger dramaturgisk struktur…",
+      error503: "Serveren er midlertidig overbelastet. Vent litt og prøv igjen.",
+      error: "Noe gikk galt. Prøv igjen.",
+      tip: "Tips: Denne strukturen er et forslag, ikke en tvangstrøye. Bruk den som et kart å avvike fra.",
+      loadingTips: [
+        "Leser gjennom historien din…",
+        "Finner de dramaturgiske vendepunktene…",
+        "Analyserer karakterenes drivkrefter…",
+        "Bygger strukturen beat for beat…",
+        "Sjekker at historiebuens holder…",
+        "Legger siste hånd på strukturen…",
+      ],
+      generatingBeat: "Genererer…",
+      feedbackPlaceholder: "Skriv tilbakemelding — f.eks. 'for klisjéaktig' eller 'protagonisten ville aldri gjort dette'…",
+      feedbackBtn: "Fortsett →",
+      regenerating: "Regenererer…",
+      whatIsThis: "Hva er dette?",
+      giveFeedback: "Gi tilbakemelding",
+      editBeat: "Rediger",
+      saveBeat: "Lagre",
+      retryBtn: "Prøv igjen",
+      switchModel: "Bytt modell",
+      switchModelLabel: "Prøv med en annen modell:",
+      switchModelConfirm: "Det nåværende forslaget ditt forsvinner. Vil du bytte modell?",
+      cancel: "Avbryt",
+      scopeQuestion: "Hvor mye skal regenereres?",
+      scopeOnly: "Bare dette beatet",
+      scopeOnlySub: "Resten beholdes",
+      scopeForward: "Dette beatet + alle følgende",
+      scopeForwardSub: "Tilpasser hele slutten",
+    },
+    genres: ["Thriller","Drama","Komedie","Romantikk","Skrekk","Science Fiction","Fantasy","Action","Historisk","Biografisk","Mysterium","Eventyr"],
+    tones:  ["Mørk og spent","Lett og varm","Poetisk og drømmende","Satirisk","Episk","Intim og personlig","Humoristisk","Dystopisk","Romantisk","Realistisk"],
+    roles: [
+      { label: "Protagonist",     desc: "Hovedpersonen — den hvis reise og forandring historien dreier seg om." },
+      { label: "Antagonist",      desc: "Den som aktivt motarbeider protagonisten. Kan være en person, et system eller en indre kraft." },
+      { label: "Sidekick",        desc: "Den trofaste følgesvennen. Speiler protagonisten og letter ofte stemningen." },
+      { label: "Mentor",          desc: "Gir protagonisten kunnskap, verktøy eller mot — men gjør ikke reisen for dem." },
+      { label: "Kjærlighetsinteresse", desc: "Bærer ofte B-historien og temaet. Utfordrer protagonisten på et personlig plan." },
+      { label: "Folie",           desc: "Kontrasterer protagonisten og gjør hens egenskaper tydeligere — ikke nødvendigvis en fiende." },
+      { label: "Luring",          desc: "Skaper kaos, utfordrer normer og avslører sannheter gjennom humor eller uventede handlinger." },
+      { label: "Budbringer",      desc: "Leverer kallelsen eller avgjørende informasjon som setter historien i gang." },
+      { label: "Vokter",          desc: "Tester protagonisten ved viktige terskler. Kan være en prøvelse snarere enn en fiende." },
+      { label: "Skyggefigur",     desc: "Representerer protagonistens mørke side eller det hen frykter å bli — et speil, ikke alltid en fiende." },
+    ],
+  },
+  da: {
+    appSubtitle: "Dramaturgiværktøj for fortællere",
+    steps: ["Model", "Idé", "Karakterer", "Struktur"],
+    beatSheetExplainer: "Beskriv din idé og dine karakterer. Appen genererer en komplet dramaturgisk struktur tilpasset netop din historie.",
+    modelStep: {
+      heading: "Vælg dramaturgimodel",
+      bestLabel: "Passer bedst til",
+      worstLabel: "Mindre egnet til",
+      examplesLabel: "Eksempler",
+      btn: "Næste: Historieidé →",
+    },
+    ideaStep: {
+      heading: "Din historieidé",
+      sub: "Begynd med kernen — hvad handler historien om?",
+      loglineLabel: "Logline",
+      loglinePlaceholder: "En sætning der fanger essensen: hvem er protagonisten, hvad vil de, og hvad er hindringen?",
+      titleLabel: "Titel (valgfri)",
+      titlePlaceholder: "Arbejdstitel",
+      genreLabel: "Genre",
+      toneLabel: "Tone & stemning",
+      btn: "Næste: Karakterer →",
+    },
+    charStep: {
+      heading: "Karakterer",
+      sub: "Tilføj dine vigtigste karakterer. Mindst én er påkrævet.",
+      nameLabel: "Navn",
+      namePlaceholder: "Karakterens navn",
+      roleLabel: "Rolle",
+      descLabel: "Baggrund & motivation",
+      descPlaceholder: "Hvad vil karakteren? Hvad holder dem tilbage?",
+      addBtn: "+ Tilføj karakter",
+      backBtn: "← Tilbage",
+      nextBtn: "Generer struktur →",
+    },
+    beatStep: {
+      fallbackTitle: "Struktur",
+      newBtn: "Ny historie",
+      generating: "Bygger dramaturgisk struktur…",
+      error503: "Serveren er midlertidigt overbelastet. Vent et øjeblik og prøv igen.",
+      error: "Noget gik galt. Prøv igen.",
+      tip: "Tip: Denne struktur er et forslag, ikke en tvangstrøje. Brug den som et kort at afvige fra.",
+      loadingTips: [
+        "Læser din historie igennem…",
+        "Finder de dramaturgiske vendepunkter…",
+        "Analyserer karakterernes drivkræfter…",
+        "Bygger strukturen beat for beat…",
+        "Tjekker at historiebuen holder…",
+        "Lægger sidste hånd på strukturen…",
+      ],
+      generatingBeat: "Genererer…",
+      feedbackPlaceholder: "Skriv feedback — f.eks. 'for klichéagtig' eller 'protagonisten ville aldrig gøre det her'…",
+      feedbackBtn: "Fortsæt →",
+      regenerating: "Regenererer…",
+      whatIsThis: "Hvad er dette?",
+      giveFeedback: "Giv feedback",
+      editBeat: "Rediger",
+      saveBeat: "Gem",
+      retryBtn: "Prøv igen",
+      switchModel: "Skift model",
+      switchModelLabel: "Prøv med en anden model:",
+      switchModelConfirm: "Dit nuværende forslag forsvinder. Vil du skifte model?",
+      cancel: "Annuller",
+      scopeQuestion: "Hvor meget skal regenereres?",
+      scopeOnly: "Kun dette beat",
+      scopeOnlySub: "Resten bevares",
+      scopeForward: "Dette beat + alle følgende",
+      scopeForwardSub: "Tilpasser hele slutningen",
+    },
+    genres: ["Thriller","Drama","Komedie","Romantik","Gyser","Science Fiction","Fantasy","Action","Historisk","Biografisk","Mysterium","Eventyr"],
+    tones:  ["Mørk og presset","Let og varm","Poetisk og drømmende","Satirisk","Episk","Intim og personlig","Humoristisk","Dystopisk","Romantisk","Realistisk"],
+    roles: [
+      { label: "Protagonist",     desc: "Hovedpersonen — den hvis rejse og forandring historien drejer sig om." },
+      { label: "Antagonist",      desc: "Den der aktivt modarbejder protagonisten. Kan være en person, et system eller en indre kraft." },
+      { label: "Sidekick",        desc: "Den trofaste ledsager. Spejler protagonisten og letter ofte stemningen." },
+      { label: "Mentor",          desc: "Giver protagonisten viden, værktøjer eller mod — men gør ikke rejsen for dem." },
+      { label: "Kærlighedsinteresse", desc: "Bærer ofte B-historien og temaet. Udfordrer protagonisten på et personligt plan." },
+      { label: "Folie",           desc: "Kontrasterer protagonisten og gør hens egenskaber tydeligere — ikke nødvendigvis en fjende." },
+      { label: "Luring",          desc: "Skaber kaos, udfordrer normer og afslører sandheder gennem humor eller uventede handlinger." },
+      { label: "Budbringer",      desc: "Leverer kaldet eller afgørende information der sætter historien i gang." },
+      { label: "Vagter",          desc: "Tester protagonisten ved vigtige tærskler. Kan være en prøvelse snarere end en fjende." },
+      { label: "Skyggefigur",     desc: "Repræsenterer protagonistens mørke side eller det de frygter at blive — et spejl, ikke altid en fjende." },
     ],
   },
 };
@@ -885,7 +1103,7 @@ export default function App({ initialLang } = {}) {
         : `You are an expert in dramaturgy.\n\nStory: Title: ${idea.title || "Unknown"} | Genre: ${idea.genre || "Unknown"} | Tone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\nCharacters: ${charText || "None"}\nModel: ${modelName}\n\nApproved beats:\n${confirmedBeats}\n\nFeedback on "${beatLabels[fromIndex].label}": ${extraInstruction}\n\nRegenerate from "${beatLabels[fromIndex].label}" onward. Respond ONLY with JSON keys: ${regenKeys}`;
     }
     return lang === "sv"
-      ? `Du är en expert på dramaturgi.\n\nBerättelse:\nTitel: ${idea.title || "Okänd"}\nGenre: ${idea.genre || "Okänd"}\nTon: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\n\nKaraktärer:\n${charText || "Inga"}\n\nModell: ${modelName}\n\nGenerera ett komplett beat sheet på SVENSKA. Svara ENBART med JSON (inga backticks) med dessa nycklar:\n${allKeys.join(", ")}\n\nVarje värde: 2–4 meningar, specifika för just den här berättelsen.`
+      ? `Du är en expert på dramaturgi.\n\nBerättelse:\nTitel: ${idea.title || "Okänd"}\nGenre: ${idea.genre || "Okänd"}\nTon: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\n\nKaraktärer:\n${charText || "Inga"}\n\nModell: ${modelName}\n\nGenerera ett komplett beat sheet på ${lang === "no" ? "NORSKA" : lang === "da" ? "DANSKA" : "SVENSKA"}. Svara ENBART med JSON (inga backticks) med dessa nycklar:\n${allKeys.join(", ")}\n\nVarje värde: 2–4 meningar, specifika för just den här berättelsen.`
       : `You are an expert in dramaturgy.\n\nStory:\nTitle: ${idea.title || "Unknown"}\nGenre: ${idea.genre || "Unknown"}\nTone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\n\nCharacters:\n${charText || "None"}\n\nModel: ${modelName}\n\nGenerate a complete beat sheet in ENGLISH. Respond ONLY with JSON (no backticks) with these keys:\n${allKeys.join(", ")}\n\nEach value: 2–4 sentences specific to this story.`;
   };
 
@@ -982,6 +1200,7 @@ export default function App({ initialLang } = {}) {
             </svg>
             <span style={{ fontFamily: F.serif, fontSize: "18px", fontWeight: "400", color: C.ink }}>Dramaturg</span>
           </div>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           {/* Breadcrumbs — below logo */}
           <div style={{ display: "flex", alignItems: "center", gap: "2px" }}>
             {visibleSteps.map((s, i) => {
@@ -1004,6 +1223,17 @@ export default function App({ initialLang } = {}) {
                 </div>
               );
             })}
+          </div>
+          <select value={lang} onChange={e => setLang(e.target.value)} style={{
+            background: "none", border: `1px solid ${C.border}`, borderRadius: "4px",
+            color: C.inkDim, cursor: "pointer", fontFamily: F.serif, fontSize: "13px",
+            padding: "3px 6px", outline: "none", flexShrink: 0,
+          }}>
+            <option value="sv">SV</option>
+            <option value="en">EN</option>
+            <option value="no">NO</option>
+            <option value="da">DA</option>
+          </select>
           </div>
         </div>
       )}
@@ -1045,6 +1275,8 @@ export default function App({ initialLang } = {}) {
             <div className="r-lang-row" style={{ display: "flex", gap: "14px" }}>
               <LangOption lang="sv" label="Svenska" selected={lang === "sv"} onSelect={(l) => { setLang(l); setStep(1); }} />
               <LangOption lang="en" label="English" selected={lang === "en"} onSelect={(l) => { setLang(l); setStep(1); }} />
+              <LangOption lang="no" label="Norsk" selected={lang === "no"} onSelect={(l) => { setLang(l); setStep(1); }} />
+              <LangOption lang="da" label="Dansk" selected={lang === "da"} onSelect={(l) => { setLang(l); setStep(1); }} />
             </div>
           </div>
         )}
