@@ -208,7 +208,7 @@ export default function LandingPage({ onEnter, lang: initialLang }) {
       </nav>
 
       {/* Hero */}
-      <section className="lp-pad" style={{ padding: "90px 40px 70px", maxWidth: "760px", margin: "0 auto", textAlign: "center" }}>
+      <section className="lp-pad" style={{ padding: "80px 40px 60px", maxWidth: "760px", margin: "0 auto", textAlign: "center" }}>
         <h1 className="lp-hero-title lp-fade1" style={{ fontSize: "42px", fontWeight: "400", lineHeight: 1.2, marginBottom: "18px" }}>
           {c.tagline}
         </h1>
@@ -238,32 +238,34 @@ export default function LandingPage({ onEnter, lang: initialLang }) {
               </div>
             </div>
           ))}
-          <div style={{ marginTop: "24px", textAlign: "center" }}>
+          <div style={{ marginTop: "28px", textAlign: "center" }}>
             <button onClick={() => onEnter(lang)} className="lp-cta" style={{
-              background: "none", border: `1px solid ${C.border}`, color: C.inkDim,
-              borderRadius: "6px", padding: "10px 22px", cursor: "pointer",
-              fontFamily: F.serif, fontSize: "14px", transition: "all 0.15s",
+              background: C.ink, border: "none", color: "#fff",
+              borderRadius: "6px", padding: "13px 28px", cursor: "pointer",
+              fontFamily: F.serif, fontSize: "15px", transition: "background 0.2s",
             }}>
-              {lang === "sv" ? "Se hela strukturen i appen" : lang === "no" ? "Se hele strukturen i appen" : lang === "da" ? "Se hele strukturen i appen" : "See the full structure in the app"}
+              {lang === "sv" ? "Prova med din egen berättelse" : lang === "no" ? "Prøv med din egen historie" : lang === "da" ? "Prøv med din egen historie" : "Try with your own story"}
             </button>
           </div>
         </div>
       </section>
 
       {/* How it works */}
-      <section className="lp-pad" style={{ padding: "70px 40px", maxWidth: "760px", margin: "0 auto" }}>
+      <section style={{ background: C.bg, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
+      <div className="lp-pad" style={{ padding: "70px 40px", maxWidth: "760px", margin: "0 auto" }}>
         <h2 style={{ fontSize: "26px", fontWeight: "400", marginBottom: "36px" }}>{c.howTitle}</h2>
         <div className="lp-grid3" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "28px" }}>
           {c.steps.map((s, i) => (
             <div key={i}>
-              <div style={{ width: "30px", height: "30px", borderRadius: "50%", border: `1px solid ${C.border}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px" }}>
-                <span style={{ fontSize: "13px", color: C.inkDim }}>{s.n}</span>
+              <div style={{ width: "30px", height: "30px", borderRadius: "50%", background: C.act1, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "12px" }}>
+                <span style={{ fontSize: "13px", color: "#fff" }}>{s.n}</span>
               </div>
               <h3 style={{ fontSize: "16px", fontWeight: "400", marginBottom: "8px" }}>{s.title}</h3>
               <p style={{ fontSize: "14px", color: C.inkDim, lineHeight: 1.6 }}>{s.desc}</p>
             </div>
           ))}
         </div>
+      </div>
       </section>
 
       {/* Features */}
@@ -293,12 +295,15 @@ export default function LandingPage({ onEnter, lang: initialLang }) {
       </section>
 
       {/* Footer */}
-      <footer style={{ borderTop: `1px solid ${C.border}`, padding: "20px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "10px" }}>
+      <footer style={{ borderTop: `1px solid ${C.border}`, padding: "20px 40px", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <QuillIcon size={16} />
           <span style={{ fontSize: "14px", color: C.inkDim }}>Dramaturg</span>
+          <span style={{ fontSize: "13px", color: C.inkFaint }}>© 2025</span>
         </div>
-        <span style={{ fontSize: "13px", color: C.inkFaint, fontStyle: "italic" }}>{c.footer}</span>
+        <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
+          <a href="mailto:info@dramaturg.online" style={{ fontSize: "13px", color: C.inkFaint, textDecoration: "none" }}>info@dramaturg.online</a>
+        </div>
       </footer>
     </div>
   );
