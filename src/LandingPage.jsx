@@ -47,9 +47,9 @@ const COPY = {
     previewSub: "Ur en genererad dramaturgistruktur för en fantasy-roman — Hjälteresan",
     footer: "Dramaturg — ett verktyg för berättare med en idé som vill hitta sin form.",
     previewBeats: [
-      { label: "Den vanliga världen", text: "Elara lever som hästtjuv i det fattiga utkanten av kejsardömet. Hon är skicklig, cynisk och har lärt sig att inte lita på någon — minst av allt makten.", color: C.act1 },
-      { label: "Kallelsen", text: "En döende soldat räcker henne ett sigill med en karta och viskar ett namn: den försvunne kung som alla tror är legend. Elara är den enda som vet att han är verklig.", color: C.act1 },
-      { label: "Vägran", text: "Elara bränner kartan. Det är inte hennes krig, inte hennes kung. Hon har överlevt i åtta år utan att bry sig om riket — hon tänker inte börja nu.", color: C.act2a },
+      { label: "Den vanliga världen", text: "Elara lever som hästtjuv i det fattiga utkanten av kejsardömet. Hon är skicklig, cynisk och har lärt sig att inte lita på någon — minst av allt makten.", color: C.act1, explanation: "Vi etablerar hjältens normala tillvaro. Kontrasten mot vad som komma skall är avgörande — vi måste förstå vad hjälten lämnar bakom sig." },
+      { label: "Kallelsen", text: "En döende soldat räcker henne ett sigill med en karta och viskar ett namn: den försvunne kung som alla tror är legend. Elara är den enda som vet att han är verklig.", color: C.act1, explanation: "En utmaning dyker upp som stör den vanliga världen. Hjälten kallas att kliva utanför sin bekvämlighetszon — in i det okända." },
+      { label: "Vägran", text: "Elara bränner kartan. Det är inte hennes krig, inte hennes kung. Hon har överlevt i åtta år utan att bry sig om riket — hon tänker inte börja nu.", color: C.act2a, explanation: "Rädsla, skyldigheter, tvivel — vägran är mänsklig och nödvändig. Den visar att stakes är verkliga och att resan inte är lätt." },
       { label: "Mötet med mentorn", text: "Den blinde bibliotekarien Oryn hittar henne ändå. Han vet redan vem hon är — och vad sigillet betyder. Han erbjuder henne inte ett uppdrag, utan ett val.", color: C.act2a },
       { label: "Tröskelövergången", text: "Kejsarens soldater bränner ner byn. Elara har ingenstans att vända sig. Hon tar kartan Oryn rittat ur minnet och rider mot berget i norr.", color: C.act2a },
       { label: "Prövningar och allierade", text: "I de norra vidderna möter hon Renn, en deserterad soldat med ett pris på huvudet, och Siv, en trollkvinna som hatar Elara för vad hennes far en gång gjorde.", color: C.act2a },
@@ -79,9 +79,9 @@ const COPY = {
     previewSub: "From a generated dramatic structure for a fantasy novel — The Hero's Journey",
     footer: "Dramaturg — a tool for storytellers with an idea looking for its shape.",
     previewBeats: [
-      { label: "Ordinary World", text: "Elara lives as a horse thief on the impoverished outskirts of the empire. She is skilled, cynical, and has learned not to trust anyone — least of all those in power.", color: C.act1 },
-      { label: "Call to Adventure", text: "A dying soldier hands her a seal with a map and whispers a name: the vanished king everyone believes is legend. Elara is the only one who knows he is real.", color: C.act1 },
-      { label: "Refusal of the Call", text: "Elara burns the map. It is not her war, not her king. She has survived eight years without caring about the realm — she is not about to start now.", color: C.act2a },
+      { label: "Ordinary World", text: "Elara lives as a horse thief on the impoverished outskirts of the empire. She is skilled, cynical, and has learned not to trust anyone — least of all those in power.", color: C.act1, explanation: "We establish the hero's normal existence. The contrast with what's to come is crucial — we must understand what the hero is leaving behind." },
+      { label: "Call to Adventure", text: "A dying soldier hands her a seal with a map and whispers a name: the vanished king everyone believes is legend. Elara is the only one who knows he is real.", color: C.act1, explanation: "A challenge appears that disrupts the ordinary world. The hero is called to step outside their comfort zone — into the unknown." },
+      { label: "Refusal of the Call", text: "Elara burns the map. It is not her war, not her king. She has survived eight years without caring about the realm — she is not about to start now.", color: C.act2a, explanation: "Fear, obligation, doubt — refusal is human and necessary. It shows the stakes are real and the journey is not easy." },
       { label: "Meeting the Mentor", text: "The blind librarian Oryn finds her anyway. He already knows who she is — and what the seal means. He does not offer her a mission, but a choice.", color: C.act2a },
       { label: "Crossing the Threshold", text: "The emperor's soldiers burn down the village. Elara has nowhere left to turn. She takes the map Oryn drew from memory and rides toward the mountain in the north.", color: C.act2a },
       { label: "Tests, Allies, Enemies", text: "In the northern wastes she meets Renn, a deserter with a price on his head, and Siv, a sorceress who hates Elara for what her father once did.", color: C.act2a },
@@ -151,6 +151,37 @@ const COPY = {
       { label: "Prøvelser og allierede", text: "I de nordlige vidder møder hun Renn, en deserteret soldat med en pris på hovedet, og Siv, en troldkvinde der hader Elara for hvad hendes far engang gjorde.", color: C.act2a },
     ],
   },
+};
+
+const PreviewBeat = ({ beat }) => {
+  const [showInfo, setShowInfo] = useState(false);
+  return (
+    <div style={{ display: "flex", gap: "14px", marginBottom: "20px" }}>
+      <div style={{ width: "3px", background: beat.color, borderRadius: "2px", flexShrink: 0, marginTop: "4px" }} />
+      <div style={{ flex: 1 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "4px" }}>
+          <p style={{ margin: 0, fontSize: "12px", color: beat.color }}>{beat.label}</p>
+          {beat.explanation && (
+            <button onClick={() => setShowInfo(s => !s)} style={{
+              background: showInfo ? beat.color : "none",
+              border: `1px solid ${showInfo ? beat.color : "rgba(0,0,0,0.15)"}`,
+              borderRadius: "50%", width: "16px", height: "16px", cursor: "pointer",
+              color: showInfo ? "#fff" : "#aaa9a3", fontSize: "10px",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              transition: "all 0.15s", flexShrink: 0, padding: 0,
+              fontFamily: "Georgia, serif",
+            }}>i</button>
+          )}
+        </div>
+        {showInfo && beat.explanation && (
+          <p style={{ margin: "0 0 8px", fontSize: "13px", color: "#555550", fontStyle: "italic", lineHeight: 1.6, background: "#f7f5f0", borderRadius: "5px", padding: "8px 12px" }}>
+            {beat.explanation}
+          </p>
+        )}
+        <p style={{ margin: 0, fontSize: "15px", color: "#111110", lineHeight: 1.65 }}>{beat.text}</p>
+      </div>
+    </div>
+  );
 };
 
 export default function LandingPage({ onEnter, lang: initialLang }) {
@@ -229,23 +260,23 @@ export default function LandingPage({ onEnter, lang: initialLang }) {
         <div className="lp-pad" style={{ padding: "60px 40px", maxWidth: "660px", margin: "0 auto" }}>
           <p style={{ fontSize: "12px", color: C.inkFaint, marginBottom: "6px", letterSpacing: "1px" }}>{c.previewTitle.toUpperCase()}</p>
           <p style={{ fontSize: "15px", color: C.inkDim, fontStyle: "italic", marginBottom: "32px" }}>{c.previewSub}</p>
-          {c.previewBeats.map((b, i) => (
-            <div key={i} style={{ display: "flex", gap: "14px", marginBottom: "20px" }}>
-              <div style={{ width: "3px", background: b.color, borderRadius: "2px", flexShrink: 0, marginTop: "4px" }} />
-              <div>
-                <p style={{ margin: "0 0 4px", fontSize: "12px", color: b.color }}>{b.label}</p>
-                <p style={{ margin: 0, fontSize: "15px", color: C.ink, lineHeight: 1.65 }}>{b.text}</p>
-              </div>
-            </div>
-          ))}
-          <div style={{ marginTop: "28px", textAlign: "center" }}>
-            <button onClick={() => onEnter(lang)} className="lp-cta" style={{
-              background: C.ink, border: "none", color: "#fff",
-              borderRadius: "6px", padding: "13px 28px", cursor: "pointer",
-              fontFamily: F.serif, fontSize: "15px", transition: "background 0.2s",
+          <div style={{ position: "relative" }}>
+            {c.previewBeats.map((b, i) => (
+              <PreviewBeat key={i} beat={b} />
+            ))}
+            <div style={{
+              position: "absolute", bottom: 0, left: 0, right: 0, height: "200px",
+              background: "linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.97) 65%, #fff 100%)",
+              display: "flex", alignItems: "flex-end", justifyContent: "center", paddingBottom: "20px",
             }}>
-              {lang === "sv" ? "Prova med din egen berättelse" : lang === "no" ? "Prøv med din egen historie" : lang === "da" ? "Prøv med din egen historie" : "Try with your own story"}
-            </button>
+              <button onClick={() => onEnter(lang)} className="lp-cta" style={{
+                background: C.ink, border: "none", color: "#fff",
+                borderRadius: "6px", padding: "13px 28px", cursor: "pointer",
+                fontFamily: F.serif, fontSize: "15px", transition: "background 0.2s",
+              }}>
+                {lang === "sv" ? "Prova med din egen berättelse" : lang === "no" ? "Prøv med din egen historie" : lang === "da" ? "Prøv med din egen historie" : "Try with your own story"}
+              </button>
+            </div>
           </div>
         </div>
       </section>
