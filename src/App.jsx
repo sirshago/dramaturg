@@ -919,6 +919,9 @@ const LoadingBar = ({ t }) => {
           {tips[tipIndex]}
         </p>
       )}
+      <p style={{ margin: "14px 0 0", fontSize: "13px", fontFamily: "Georgia, serif", color: "#aaa9a3", lineHeight: 1.6, borderTop: "1px solid rgba(0,0,0,0.08)", paddingTop: "14px" }}>
+        {t.beatStep.tip}
+      </p>
     </div>
   );
 };
