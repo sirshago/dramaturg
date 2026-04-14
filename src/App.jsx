@@ -300,6 +300,7 @@ const T = {
     appSubtitle: "Dramaturgiverktyg för berättare",
     steps: ["Modell", "Idé", "Karaktärer", "Struktur"],
     beatSheetExplainer: "Beskriv din berättelseidé och dina karaktärer. Appen genererar en komplett dramaturgistruktur anpassad till din historia.",
+    onboarding: "Dramaturg fungerar bäst när du har en idé du fastnat för men inte vet hur du ska strukturera. Ju mer du vet om din berättelse, desto bättre blir resultatet.",
     modelStep: {
       heading: "Välj dramaturgimodell",
       bestLabel: "Passar bäst för",
@@ -312,6 +313,8 @@ const T = {
       sub: "Börja med kärnan — vad handlar berättelsen om?",
       loglineLabel: "Logline",
       loglinePlaceholder: "En mening som fångar berättelsens essens: vem är protagonisten, vad vill hen, och vad är hindret?",
+      loglineExample: "T.ex: En ung härskarinna förlorar sitt kungarike när hennes bror gör statskupp, och tvingas nu välja mellan att återta tronen och att rädda sitt folk från ett krig hon inte kan vinna.",
+      loglineTip: "Ju mer specifik logline, desto bättre struktur. Vad vill protagonisten konkret? Vad är det verkliga hindret?",
       titleLabel: "Titel (valfri)",
       titlePlaceholder: "Arbetstiteln",
       genreLabel: "Genre",
@@ -326,6 +329,7 @@ const T = {
       roleLabel: "Roll",
       descLabel: "Bakgrund & drivkraft",
       descPlaceholder: "Vad vill karaktären? Vad hindrar hen?",
+      descTip: "Specifika drivkrafter ger bättre beats. 'Vill ha hämnd för sin systers mord' är bättre än 'vill ha rättvisa'.",
       addBtn: "+ Lägg till karaktär",
       backBtn: "← Tillbaka",
       nextBtn: "Generera beat sheet →",
@@ -383,6 +387,7 @@ const T = {
     appSubtitle: "Dramaturgy tool for storytellers",
     steps: ["Model", "Idea", "Characters", "Structure"],
     beatSheetExplainer: "Describe your story idea and characters. The app generates a complete dramatic structure tailored to your story.",
+    onboarding: "Dramaturg works best when you have an idea you're stuck on but don't know how to structure. The more you know about your story, the better the result.",
     modelStep: {
       heading: "Choose your story model",
       bestLabel: "Best suited for",
@@ -395,6 +400,8 @@ const T = {
       sub: "Start with the core — what is the story about?",
       loglineLabel: "Logline",
       loglinePlaceholder: "One sentence capturing the essence: who is the protagonist, what do they want, and what stands in the way?",
+      loglineExample: "E.g: A young queen loses her kingdom when her brother stages a coup, and must now choose between reclaiming the throne and saving her people from a war she cannot win.",
+      loglineTip: "The more specific your logline, the better the structure. What does your protagonist want concretely? What is the real obstacle?",
       titleLabel: "Title (optional)",
       titlePlaceholder: "Working title",
       genreLabel: "Genre",
@@ -409,6 +416,7 @@ const T = {
       roleLabel: "Role",
       descLabel: "Background & motivation",
       descPlaceholder: "What does the character want? What holds them back?",
+      descTip: "Specific motivations produce better beats. 'Wants revenge for her sister's murder' is better than 'wants justice'.",
       addBtn: "+ Add character",
       backBtn: "← Back",
       nextBtn: "Generate beat sheet →",
@@ -735,6 +743,7 @@ const CharacterCard = ({ char, index, onChange, onRemove, t }) => {
         <label style={labelStyle}>{t.charStep.descLabel}</label>
         <textarea value={char.description} onChange={e => onChange(index, "description", e.target.value)}
           placeholder={t.charStep.descPlaceholder} rows={2} style={{ ...inputStyle, resize: "vertical" }} />
+        {t.charStep.descTip && <p style={{ margin: "6px 0 0", fontSize: "12px", color: C.inkFaint, fontFamily: F.serif, fontStyle: "italic" }}>{t.charStep.descTip}</p>}
       </div>
     </div>
   );
@@ -1103,8 +1112,8 @@ export default function App({ initialLang } = {}) {
         : `You are an expert in dramaturgy.\n\nStory: Title: ${idea.title || "Unknown"} | Genre: ${idea.genre || "Unknown"} | Tone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\nCharacters: ${charText || "None"}\nModel: ${modelName}\n\nApproved beats:\n${confirmedBeats}\n\nFeedback on "${beatLabels[fromIndex].label}": ${extraInstruction}\n\nRegenerate from "${beatLabels[fromIndex].label}" onward. Respond ONLY with JSON keys: ${regenKeys}`;
     }
     return lang === "sv"
-      ? `Du är en expert på dramaturgi.\n\nBerättelse:\nTitel: ${idea.title || "Okänd"}\nGenre: ${idea.genre || "Okänd"}\nTon: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\n\nKaraktärer:\n${charText || "Inga"}\n\nModell: ${modelName}\n\nGenerera ett komplett beat sheet på ${lang === "no" ? "NORSKA" : lang === "da" ? "DANSKA" : "SVENSKA"}. Svara ENBART med JSON (inga backticks) med dessa nycklar:\n${allKeys.join(", ")}\n\nVarje värde: 2–4 meningar, specifika för just den här berättelsen.`
-      : `You are an expert in dramaturgy.\n\nStory:\nTitle: ${idea.title || "Unknown"}\nGenre: ${idea.genre || "Unknown"}\nTone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\n\nCharacters:\n${charText || "None"}\n\nModel: ${modelName}\n\nGenerate a complete beat sheet in ENGLISH. Respond ONLY with JSON (no backticks) with these keys:\n${allKeys.join(", ")}\n\nEach value: 2–4 sentences specific to this story.`;
+      ? `Du är en expert på dramaturgi.\n\nBerättelse:\nTitel: ${idea.title || "Okänd"}\nGenre: ${idea.genre || "Okänd"}\nTon: ${idea.tone || "Okänd"}\nLogline: ${idea.logline}\n\nKaraktärer:\n${charText || "Inga"}\n\nModell: ${modelName}\n\nGenerera ett komplett beat sheet på ${lang === "no" ? "NORSKA" : lang === "da" ? "DANSKA" : "SVENSKA"}. Svara ENBART med JSON (inga backticks) med dessa nycklar:\n${allKeys.join(", ")}\n\nVIKTIGT: Varje beat ska vara konkret och specifikt för JUST DEN HÄR berättelsen. Använd karaktärernas namn, specifika konflikter och konsekvenser från logline. Undvik generella fraser. Visa VAD som händer, VEM det händer med och VARFÖR det spelar roll. 2-4 meningar per beat.`
+      : `You are an expert in dramaturgy.\n\nStory:\nTitle: ${idea.title || "Unknown"}\nGenre: ${idea.genre || "Unknown"}\nTone: ${idea.tone || "Unknown"}\nLogline: ${idea.logline}\n\nCharacters:\n${charText || "None"}\n\nModel: ${modelName}\n\nGenerate a complete beat sheet in ENGLISH. Respond ONLY with JSON (no backticks) with these keys:\n${allKeys.join(", ")}\n\nIMPORTANT: Each beat must be concrete and specific to THIS story. Use the characters names, specific conflicts and consequences from the logline. Avoid generic phrases. Show WHAT happens, WHO it happens to and WHY it matters. 2-4 sentences per beat.`;
   };
 
   const callAPI = async (prompt, mergeKeys = null) => {
@@ -1284,6 +1293,9 @@ export default function App({ initialLang } = {}) {
         {/* ── 1: MODEL ── */}
         {step === 1 && (
           <div style={{ animation: "fadeIn 0.4s ease" }}>
+            <div style={{ background: "#fff", border: `1px solid ${C.border}`, borderRadius: "7px", padding: "14px 16px", marginBottom: "24px" }}>
+              <p style={{ margin: 0, fontSize: "15px", color: C.inkDim, fontFamily: F.serif, lineHeight: 1.6 }}>{t.onboarding}</p>
+            </div>
             <h2 className="r-title" style={{ fontFamily: F.serif, fontWeight: "400", fontSize: "30px", margin: "0 0 24px" }}>{t.modelStep.heading}</h2>
             {models.map(m => <ModelCard key={m.id} model={m} selected={model === m.id} onSelect={setModel} t={t} />)}
             <div style={{ marginTop: "24px" }}>
@@ -1301,6 +1313,8 @@ export default function App({ initialLang } = {}) {
               <label style={labelStyle}>{t.ideaStep.loglineLabel}</label>
               <textarea value={idea.logline} onChange={e => setIdea({ ...idea, logline: e.target.value })}
                 placeholder={t.ideaStep.loglinePlaceholder} rows={3} style={{ ...inputStyle, resize: "vertical" }} />
+              <p style={{ margin: "8px 0 0", fontSize: "13px", color: C.inkFaint, fontFamily: F.serif, fontStyle: "italic", lineHeight: 1.5 }}>{t.ideaStep.loglineTip}</p>
+              <p style={{ margin: "4px 0 0", fontSize: "13px", color: C.inkFaint, fontFamily: F.serif, lineHeight: 1.5 }}>{t.ideaStep.loglineExample}</p>
             </div>
             <div className="r-grid2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px", marginBottom: "18px" }}>
               <div>
