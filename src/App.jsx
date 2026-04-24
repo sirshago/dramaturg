@@ -361,7 +361,7 @@ const T = {
       switchModel: "Byt modell",
       switchModelLabel: "Prova med en annan modell:",
       switchModelConfirm: "Ditt nuvarande förslag försvinner. Vill du byta modell?",
-      feedbackQuestion: "Hittade du det du letade efter?",
+      feedbackQuestion: "Var det här till någon nytta för dig?",
       feedbackThanks: "Tack!",
       cancel: "Avbryt",
       scopeQuestion: "Hur mycket ska regenereras?",
@@ -450,7 +450,7 @@ const T = {
       switchModel: "Switch model",
       switchModelLabel: "Try with a different model:",
       switchModelConfirm: "Your current suggestion will be lost. Switch model?",
-      feedbackQuestion: "Did you find what you were looking for?",
+      feedbackQuestion: "Was this useful to you?",
       feedbackThanks: "Thanks!",
       cancel: "Cancel",
       scopeQuestion: "How much should be regenerated?",
@@ -535,7 +535,7 @@ const T = {
       switchModel: "Bytt modell",
       switchModelLabel: "Prøv med en annen modell:",
       switchModelConfirm: "Det nåværende forslaget ditt forsvinner. Vil du bytte modell?",
-      feedbackQuestion: "Fant du det du lette etter?",
+      feedbackQuestion: "Var dette nyttig for deg?",
       feedbackThanks: "Takk!",
       cancel: "Avbryt",
       scopeQuestion: "Hvor mye skal regenereres?",
@@ -620,7 +620,7 @@ const T = {
       switchModel: "Skift model",
       switchModelLabel: "Prøv med en anden model:",
       switchModelConfirm: "Dit nuværende forslag forsvinder. Vil du skifte model?",
-      feedbackQuestion: "Fandt du det du ledte efter?",
+      feedbackQuestion: "Var dette nyttigt for dig?",
       feedbackThanks: "Tak!",
       cancel: "Annuller",
       scopeQuestion: "Hvor meget skal regenereres?",
@@ -952,36 +952,25 @@ const ThumbsFeedback = ({ lang, model, t }) => {
     }
   };
 
-  if (voted) {
-    return (
-      <p style={{ fontSize: "13px", color: "#aaa9a3", fontFamily: "Georgia, serif", fontStyle: "italic", margin: 0 }}>
-        {t.beatStep.feedbackThanks}
-      </p>
-    );
-  }
-
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-      <button onClick={() => sendFeedback("up")} title="Ja" style={{
-        background: "none", border: "1px solid rgba(0,0,0,0.15)", borderRadius: "6px",
-        padding: "6px 10px", cursor: "pointer", color: "#555550", transition: "all 0.15s",
-        display: "flex", alignItems: "center",
-      }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3H14z"/>
-          <path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
-        </svg>
-      </button>
-      <button onClick={() => sendFeedback("down")} title="Nej" style={{
-        background: "none", border: "1px solid rgba(0,0,0,0.15)", borderRadius: "6px",
-        padding: "6px 10px", cursor: "pointer", color: "#555550", transition: "all 0.15s",
-        display: "flex", alignItems: "center",
-      }}>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3H10z"/>
-          <path d="M17 2h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>
-        </svg>
-      </button>
+    <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "8px" }}>
+      {voted ? (
+        <span style={{ fontSize: "13px", color: "#aaa9a3", fontFamily: "Georgia, serif", fontStyle: "italic" }}>{t.beatStep.feedbackThanks}</span>
+      ) : (
+        <>
+          <span style={{ fontSize: "13px", color: "#aaa9a3", fontFamily: "Georgia, serif" }}>{t.beatStep.feedbackQuestion}</span>
+          <button onClick={() => sendFeedback("up")} style={{
+            background: "#e8f3ea", border: "1px solid #b8d8bc", borderRadius: "5px",
+            padding: "5px 14px", cursor: "pointer", color: "#2d6e3a",
+            fontFamily: "Georgia, serif", fontSize: "13px", transition: "all 0.15s",
+          }}>{lang === "en" ? "Yes" : "Ja"}</button>
+          <button onClick={() => sendFeedback("down")} style={{
+            background: "#fde8e8", border: "1px solid #f0b8b8", borderRadius: "5px",
+            padding: "5px 14px", cursor: "pointer", color: "#8b2020",
+            fontFamily: "Georgia, serif", fontSize: "13px", transition: "all 0.15s",
+          }}>{lang === "en" ? "No" : lang === "no" ? "Nei" : lang === "da" ? "Nej" : "Nej"}</button>
+        </>
+      )}
     </div>
   );
 };
