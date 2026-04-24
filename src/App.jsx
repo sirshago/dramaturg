@@ -361,6 +361,8 @@ const T = {
       switchModel: "Byt modell",
       switchModelLabel: "Prova med en annan modell:",
       switchModelConfirm: "Ditt nuvarande förslag försvinner. Vill du byta modell?",
+      feedbackQuestion: "Hittade du det du letade efter?",
+      feedbackThanks: "Tack!",
       cancel: "Avbryt",
       scopeQuestion: "Hur mycket ska regenereras?",
       scopeOnly: "Bara detta beat",
@@ -448,6 +450,8 @@ const T = {
       switchModel: "Switch model",
       switchModelLabel: "Try with a different model:",
       switchModelConfirm: "Your current suggestion will be lost. Switch model?",
+      feedbackQuestion: "Did you find what you were looking for?",
+      feedbackThanks: "Thanks!",
       cancel: "Cancel",
       scopeQuestion: "How much should be regenerated?",
       scopeOnly: "This beat only",
@@ -531,6 +535,8 @@ const T = {
       switchModel: "Bytt modell",
       switchModelLabel: "Prøv med en annen modell:",
       switchModelConfirm: "Det nåværende forslaget ditt forsvinner. Vil du bytte modell?",
+      feedbackQuestion: "Fant du det du lette etter?",
+      feedbackThanks: "Takk!",
       cancel: "Avbryt",
       scopeQuestion: "Hvor mye skal regenereres?",
       scopeOnly: "Bare dette beatet",
@@ -614,6 +620,8 @@ const T = {
       switchModel: "Skift model",
       switchModelLabel: "Prøv med en anden model:",
       switchModelConfirm: "Dit nuværende forslag forsvinder. Vil du skifte model?",
+      feedbackQuestion: "Fandt du det du ledte efter?",
+      feedbackThanks: "Tak!",
       cancel: "Annuller",
       scopeQuestion: "Hvor meget skal regenereres?",
       scopeOnly: "Kun dette beat",
@@ -881,8 +889,8 @@ const LoadingBar = ({ t }) => {
     // Progress bar — fills to ~85% then slows
     const interval = setInterval(() => {
       setProgress(p => {
-        if (p < 70) return p + 1.2;
-        if (p < 85) return p + 0.3;
+        if (p < 70) return p + 0.4;
+        if (p < 85) return p + 0.1;
         return p;
       });
     }, 180);
@@ -922,6 +930,47 @@ const LoadingBar = ({ t }) => {
       <p style={{ margin: "14px 0 0", fontSize: "13px", fontFamily: "Georgia, serif", color: "#aaa9a3", lineHeight: 1.6, borderTop: "1px solid rgba(0,0,0,0.08)", paddingTop: "14px" }}>
         {t.beatStep.tip}
       </p>
+    </div>
+  );
+};
+
+
+// ─── THUMBS FEEDBACK ─────────────────────────────────────────────────────────
+const ThumbsFeedback = ({ lang, model, t }) => {
+  const [voted, setVoted] = useState(null);
+
+  const sendFeedback = async (rating) => {
+    setVoted(rating);
+    try {
+      await fetch("/api/feedback", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ rating, lang, model }),
+      });
+    } catch (e) {
+      console.error("Feedback error:", e);
+    }
+  };
+
+  if (voted) {
+    return (
+      <p style={{ fontSize: "14px", color: "#888880", fontFamily: "Georgia, serif", fontStyle: "italic", margin: 0 }}>
+        {t.beatStep.feedbackThanks}
+      </p>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+      <p style={{ margin: 0, fontSize: "14px", color: "#555550", fontFamily: "Georgia, serif" }}>{t.beatStep.feedbackQuestion}</p>
+      <button onClick={() => sendFeedback("up")} style={{
+        background: "none", border: "1px solid rgba(0,0,0,0.15)", borderRadius: "6px",
+        padding: "6px 12px", cursor: "pointer", fontSize: "16px", transition: "all 0.15s",
+      }}>👍</button>
+      <button onClick={() => sendFeedback("down")} style={{
+        background: "none", border: "1px solid rgba(0,0,0,0.15)", borderRadius: "6px",
+        padding: "6px 12px", cursor: "pointer", fontSize: "16px", transition: "all 0.15s",
+      }}>👎</button>
     </div>
   );
 };
@@ -1120,11 +1169,25 @@ export default function App({ initialLang } = {}) {
   };
 
   const callAPI = async (prompt, mergeKeys = null) => {
-    const response = await fetch("/api/anthropic/v1/messages", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
-    });
-    if (response.status === 529 || response.status === 503) throw new Error("overloaded");
+    const attempt = async (delay) => {
+      if (delay > 0) await new Promise(r => setTimeout(r, delay));
+      const response = await fetch("/api/anthropic/v1/messages", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ model: "claude-sonnet-4-20250514", max_tokens: 1500, messages: [{ role: "user", content: prompt }] }),
+      });
+      if (response.status === 529 || response.status === 503) throw new Error("overloaded");
+      return response;
+    };
+    let response;
+    try { response = await attempt(0); }
+    catch(e) {
+      if (e.message !== "overloaded") throw e;
+      try { response = await attempt(3000); }
+      catch(e2) {
+        if (e2.message !== "overloaded") throw e2;
+        response = await attempt(6000);
+      }
+    }
     const data = await response.json();
     const text = data.content?.map(i => i.text || "").join("") || "";
     const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
@@ -1386,6 +1449,9 @@ export default function App({ initialLang } = {}) {
                 <ExportBar beats={beats} beatLabels={beatLabels} idea={idea} modelInfo={modelInfo} lang={lang} t={t} />
                 <div style={{ marginTop: "16px", padding: "16px 18px", background: "#fff", border: `1px solid ${C.border}`, borderRadius: "6px" }}>
                   <p style={{ margin: 0, fontSize: "14px", color: C.inkDim, fontFamily: F.serif, fontStyle: "italic" }}>{t.beatStep.tip}</p>
+                </div>
+                <div style={{ marginTop: "16px", padding: "16px 18px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: "6px" }}>
+                  <ThumbsFeedback lang={lang} model={model} t={t} />
                 </div>
                 {/* Model switcher */}
                 <div style={{ marginTop: "24px", padding: "16px 18px", background: C.surface, border: `1px solid ${C.border}`, borderRadius: "6px" }}>
